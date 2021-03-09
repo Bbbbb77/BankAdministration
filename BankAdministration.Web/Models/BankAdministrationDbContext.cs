@@ -6,10 +6,7 @@ namespace BankAdministration.Web.Models
 {
 	public class BankAdministrationDbContext : DbContext
 	{
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-			///optionsBuilder.UseSqlServer();
-        }
+        public BankAdministrationDbContext(DbContextOptions options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
 

@@ -7,6 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BankAdministration.Web.Models;
+using Microsoft.EntityFrameworkCore;
+using BankAdministration.Web.Services;
 
 namespace BankAdministration.Web
 {
@@ -22,11 +25,19 @@ namespace BankAdministration.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddDbContext<BankAdministrationDbContext>(
+                options => 
+                {
+                    options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection"));
+                });
+
+            services.AddTransient<IBankAdministrationService, BankAdministrationService>();
             services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services)
         {
             if (env.IsDevelopment())
             {
@@ -48,6 +59,9 @@ namespace BankAdministration.Web
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            var context = services.GetRequiredService<BankAdministrationDbContext>();
+            DbInitializer.Initialize(context);
         }
     }
 }

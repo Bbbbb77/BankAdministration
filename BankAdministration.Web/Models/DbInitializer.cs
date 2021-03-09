@@ -10,7 +10,7 @@ namespace BankAdministration.Web.Models
     {
         public static void Initialize(BankAdministrationDbContext context)
         {
-            context.Database.Migrate();
+           /* context.Database.Migrate();
             if (context.BankAccounts.Any())
             {
                 return;
@@ -20,7 +20,7 @@ namespace BankAdministration.Web.Models
 
             //context.Add(defaultLists.First()); egy elem hozzáadása
             context.AddRange(defaultLists); // optimálisabb mint egyesével
-            context.SaveChanges();
+            context.SaveChanges();*/
         }
     }
 }
