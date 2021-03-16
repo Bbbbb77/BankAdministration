@@ -12,9 +12,11 @@ namespace BankAdministration.Web.Models
 		[Required]
 		[MaxLength(24)]
 		[MinLength(24)]
-		public Int32 number { get; set; }
+		public Int32 Number { get; set; }
 
-        public Int32 Balance { get; set; }
+        public Int64 Balance { get; set; }
+
+        public bool IsLocked  { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
 

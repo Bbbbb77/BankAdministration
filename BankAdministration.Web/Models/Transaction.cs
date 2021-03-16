@@ -19,6 +19,10 @@ namespace BankAdministration.Web.Models
 
         public TransactionTypeEnum TransactionType { get; set; }
 
+        public Int32 SourceAccountNumber { get; set; }
+
+        public Int32 DestinationAccountNumber { get; set; }
+
         public Int32 Amount { get; set; }
 
         public Int32 OldBalance { get; set; }

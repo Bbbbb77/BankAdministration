@@ -12,6 +12,6 @@ namespace BankAdministration.Web.Models
 
         public DbSet<BankAccount> BankAccounts { get; set; }
     
-        public DbSet<Transaction> TransActions { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
     }
 }
