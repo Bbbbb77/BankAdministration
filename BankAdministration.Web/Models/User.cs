@@ -6,15 +6,7 @@ using Microsoft.AspNetCore.Identity;
 namespace BankAdministration.Web.Models
 {
 	public class User : IdentityUser
-	{
-		[Required]
-		[MaxLength(20)]	
-		public string FirstName { get; set; }
-
-		[Required]
-		[MaxLength(20)]
-		public string LastName { get; set; }
-		
+	{	
 		[Required]
 		[MaxLength(6)]
 		[MinLength(6)]

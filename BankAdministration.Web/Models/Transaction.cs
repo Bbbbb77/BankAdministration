@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 
 namespace BankAdministration.Web.Models
@@ -19,21 +20,22 @@ namespace BankAdministration.Web.Models
 
         public TransactionTypeEnum TransactionType { get; set; }
 
-        public Int32 SourceAccountNumber { get; set; }
+        public string SourceAccountNumber { get; set; }
 
-        public Int32 DestinationAccountNumber { get; set; }
+        public string DestinationAccountNumber { get; set; }
 
-        public Int32 Amount { get; set; }
+        public Int64 Amount { get; set; }
 
-        public Int32 OldBalance { get; set; }
+        public Int64 OldBalance { get; set; }
 
-        public Int32 NewBalance { get; set; }
+        public Int64 NewBalance { get; set; }
 
         public DateTime TransactionTime { get; set; }
 
+        [Required]
+        [DisplayName("BankAccount")]
         public Int32 BankAccountId { get; set; }
 
-        [Required]
-        public virtual BankAccount TransactionOwner { get; set; }
+        public virtual BankAccount BankAccount { get; set; }
     }
 }

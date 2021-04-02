@@ -9,34 +9,48 @@ namespace BankAdministration.Web.Services
 {
     public class BankAdministrationService : IBankAdministrationService
     {
-        private readonly BankAdministrationDbContext _context;
+        private readonly BankAdministrationDbContext context_;
 
         public BankAdministrationService(BankAdministrationDbContext context)
         {
-            _context = context;
+            context_ = context;
+        }
+
+        public User GetUserById(string id)
+        {
+            return context_.Users
+                .Include(l => l.BankAccounts)
+                .FirstOrDefault(l => l.Id == id);
         }
 
         public List<BankAccount> GetBankAccounts(User user)
         {
-            return _context.BankAccounts
+            return context_.BankAccounts
                 .Where(l => l.User == user)
+                .OrderBy(l => l.Id)
+                .ToList();
+        }
+
+        public List<BankAccount> AllBankAccounts()
+        {
+            return context_.BankAccounts
                 .OrderBy(l => l.Id)
                 .ToList();
         }
 
         public BankAccount GetBankAccountById(int id)
         {
-            return _context.BankAccounts
+            return context_.BankAccounts
                 .Include(l => l.Transactions)
-                .Single(l => l.Id == id); // throws exception if id not found
+                .FirstOrDefault(l => l.Id == id);
         }
 
         public bool CreateBankAccount(BankAccount bankAccount)
         {
             try
             {
-                _context.Add(bankAccount);
-                _context.SaveChanges();
+                context_.Add(bankAccount);
+                context_.SaveChanges();
             }
             catch (DbUpdateException)
             {
@@ -50,8 +64,8 @@ namespace BankAdministration.Web.Services
         {
             try
             {
-                _context.Update(bankAccount);
-                _context.SaveChanges();
+                context_.Update(bankAccount);
+                context_.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -67,14 +81,14 @@ namespace BankAdministration.Web.Services
 
         public bool DeleteBankAccount(int id)
         {
-            var bankAccount = _context.BankAccounts.Find(id);
+            var bankAccount = context_.BankAccounts.Find(id);
             if (bankAccount == null)
                 return false;
 
             try
             {
-                _context.Remove(bankAccount);
-                _context.SaveChanges();
+                context_.Remove(bankAccount);
+                context_.SaveChanges();
             }
             catch (DbUpdateException)
             {
@@ -86,15 +100,15 @@ namespace BankAdministration.Web.Services
 
         public List<Transaction> GetTransactions()
         {
-            return _context.Transactions
+            return context_.Transactions
                 .OrderBy(i => i.TransactionTime)
                 .ToList();
         }
 
         public Transaction GetTransaction(int id)
         {
-            return _context.Transactions
-                //.Include(i => i.BankAccounts)
+            return context_.Transactions
+                .Include(i => i.BankAccount)
                 .FirstOrDefault(i => i.Id == id);
         }
 
@@ -102,8 +116,8 @@ namespace BankAdministration.Web.Services
         {
             try
             {
-                _context.Add(transaction);
-                _context.SaveChanges();
+                context_.Add(transaction);
+                context_.SaveChanges();
             }
             catch (DbUpdateException)
             {
@@ -117,8 +131,8 @@ namespace BankAdministration.Web.Services
         {
             try
             {
-                _context.Update(transaction);
-                _context.SaveChanges();
+                context_.Update(transaction);
+                context_.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -134,14 +148,14 @@ namespace BankAdministration.Web.Services
 
         public bool DeleteTransaction(int id)
         {
-            var transaction = _context.Transactions.Find(id);
+            var transaction = context_.Transactions.Find(id);
             if (transaction == null)
                 return false;
 
             try
             {
-                _context.Remove(transaction);
-                _context.SaveChanges();
+                context_.Remove(transaction);
+                context_.SaveChanges();
             }
             catch (DbUpdateException)
             {
@@ -149,6 +163,13 @@ namespace BankAdministration.Web.Services
             }
 
             return true;
+        }
+
+        public bool CheckBankAccount(string newBankAccountNumber)
+        {
+            int pincode;
+            return context_.BankAccounts.SingleOrDefault(i => i.Number == newBankAccountNumber) == null;
+            //var aaa = context_.Users.Single(i => i.Pincode == pincode && i.BankAccounts.First().Number == newBankAccountNumber) == null;
         }
 
     }

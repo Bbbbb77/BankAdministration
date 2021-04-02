@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using BankAdministration.Web.Models;
 using Microsoft.EntityFrameworkCore;
 using BankAdministration.Web.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace BankAdministration.Web
 {
@@ -27,17 +28,31 @@ namespace BankAdministration.Web
         {
 
             services.AddDbContext<BankAdministrationDbContext>(
-                options => 
+                options =>
                 {
                     options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection"));
                 });
 
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 0;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+            }).AddEntityFrameworkStores<BankAdministrationDbContext>()
+            .AddDefaultTokenProviders();
+
             services.AddTransient<IBankAdministrationService, BankAdministrationService>();
             services.AddControllersWithViews();
+
+            services.AddMvc().AddSessionStateTempDataProvider();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -51,7 +66,11 @@ namespace BankAdministration.Web
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
@@ -60,8 +79,7 @@ namespace BankAdministration.Web
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            var context = services.GetRequiredService<BankAdministrationDbContext>();
-            DbInitializer.Initialize(context);
+            DbInitializer.Initialize(serviceProvider);
         }
     }
 }

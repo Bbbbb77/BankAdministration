@@ -20,19 +20,15 @@ namespace BankAdministration.Web.Models
     
         [DisplayName("BankAccount")]
         [Required]
-        public int BankAccount { get; set; }
+        public string BankAccount { get; set; }
+
+        [DisplayName("SafeMode")]
+        [Required]
+        public bool IsSafeMode { get; set; }
     }
 
     public class RegisterViewModel
     {
-        [DisplayName("FirstName")]
-        [Required]
-        public string FirstName { get; set; }
-        
-        [DisplayName("LastName")]
-        [Required]
-        public string LastName { get; set; }
-
         [DisplayName("UserName")]
         [Required]
         public string UserName { get; set; }
@@ -48,7 +44,7 @@ namespace BankAdministration.Web.Models
 
         [DisplayName("BankAccount")]
         [Required]
-        public int BankAccount { get; set; }
+        public string BankAccount { get; set; }
     }
 
 }

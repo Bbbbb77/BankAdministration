@@ -8,7 +8,9 @@ namespace BankAdministration.Web.Services
 {
     public interface IBankAdministrationService
     {
+        User GetUserById(string id);
         List<BankAccount> GetBankAccounts(User user);
+        List<BankAccount> AllBankAccounts();
         BankAccount GetBankAccountById(int id);
         bool CreateBankAccount(BankAccount bankAccount);
         bool UpdateBankAccount(BankAccount bankAccount);
@@ -18,5 +20,6 @@ namespace BankAdministration.Web.Services
         bool CreateTransaction(Transaction transaction);
         bool UpdateTransaction(Transaction transaction);
         bool DeleteTransaction(int id);
+        bool CheckBankAccount(string newBankAccountNumber);
     }
 }

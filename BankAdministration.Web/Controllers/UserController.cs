@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BankAdministration.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
+using BankAdministration.Web.Services;
 
 namespace BankAdministration.Web.Controllers
 {
@@ -15,11 +17,13 @@ namespace BankAdministration.Web.Controllers
     {
         private readonly UserManager<User> userManager_;
         private readonly SignInManager<User> signInManager_;
+        private IBankAdministrationService service_;
 
-        public UserController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public UserController(UserManager<User> userManager, SignInManager<User> signInManager, IBankAdministrationService service)
         {
             userManager_ = userManager;
             signInManager_ = signInManager;
+            service_ = service;
         }
 
         [HttpGet]
@@ -38,13 +42,32 @@ namespace BankAdministration.Web.Controllers
             ViewBag.ReturnUrl = returnUrl;
             if (ModelState.IsValid)
             {
-                var result = await signInManager_.PasswordSignInAsync(model.UserName, model.Password, isPersistent: false, lockoutOnFailure: false);
+                //TODO Pincode and BankAccount check
+                var result = await signInManager_.PasswordSignInAsync(model.UserName,
+                                                                      model.Password,
+                                                                      isPersistent: false,
+                                                                      lockoutOnFailure: false);
+
+                //service_.GetUserById(userManager_.GetUserId());
+
+                //bool pincodeBankAccountCheck;
+
+
+
                 if (result.Succeeded)
                 {
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToAction(nameof(BankAccountsController.Index), "BankAccounts");
+                    //return RedirectToLocal(returnUrl);
                 }
 
-                ModelState.AddModelError("", "Bejelentkezés sikertelen!");
+                /*string safeMode = model.IsSafeMode ? "true" : "false";
+                HttpContext.Session.SetString("SafeMode", safeMode);
+                if (safeMode == "true")
+                {
+                    HttpContext.Session.SetString("UserIsAuthorized", "false");
+                }*/
+
+                ModelState.AddModelError("", "Unsuccesful log in!");
                 return View(model);
             }
 
@@ -55,6 +78,18 @@ namespace BankAdministration.Web.Controllers
         public IActionResult Register(string returnUrl = null)
         {
             ViewBag.ReturnUrl = returnUrl;
+
+            var newBankAccount = new StringBuilder(10);
+            var random = new Random();
+            
+            do {
+                newBankAccount.Append(random.Next(1, 9).ToString());
+                for (int i = 0; i < 9; i++)
+                    newBankAccount.Append(random.Next(0, 9).ToString());
+            } while (!service_.CheckBankAccount(newBankAccount.ToString()));
+
+            ViewData["NewBankAccount"] = newBankAccount.ToString();
+
             return View();
         }
 
@@ -65,7 +100,20 @@ namespace BankAdministration.Web.Controllers
             ViewBag.ReturnUrl = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = model.UserName };
+                var bankAccount = new BankAccount
+                {
+                    Number = model.BankAccount,
+                    Balance = 0,
+                    IsLocked = false
+                };
+
+                var user = new User
+                {
+                    UserName = model.UserName,
+                    Pincode = model.Pincode,
+                    BankAccounts = new List<BankAccount> { bankAccount }
+                };
+
                 var result = await userManager_.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
@@ -74,7 +122,7 @@ namespace BankAdministration.Web.Controllers
                     return RedirectToLocal(returnUrl);
                 }
 
-                ModelState.AddModelError("", "Sikertelen regisztráció");
+                ModelState.AddModelError("", "Unsuccesful registration!");
             }
 
             return View(model);
@@ -82,23 +130,22 @@ namespace BankAdministration.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout() //TODO redirect to login page
         {
             await signInManager_.SignOutAsync();
-            return RedirectToAction("Index", "BankAccounts");
+            return RedirectToAction("Login", "User");
         }
 
         private IActionResult RedirectToLocal(string returnUrl)
         {
-            return Redirect(returnUrl);
             if (Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
             }
-            /*else
+            else
             {
-                return RedirectToAction(nameof(BankAccountsController.Index), "BankAccounts");
-            }*/
+                return RedirectToAction(nameof(UserController.Login), "User");
+            }
         }
     }
 }
