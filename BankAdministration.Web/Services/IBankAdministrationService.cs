@@ -9,7 +9,8 @@ namespace BankAdministration.Web.Services
     public interface IBankAdministrationService
     {
         User GetUserById(string id);
-        List<BankAccount> GetBankAccounts(User user);
+        List<User> GetUsers();
+        Task<List<BankAccount>> GetBankAccounts(User user);
         List<BankAccount> AllBankAccounts();
         BankAccount GetBankAccountById(int id);
         bool CreateBankAccount(BankAccount bankAccount);

@@ -23,7 +23,12 @@ namespace BankAdministration.Web.Services
                 .FirstOrDefault(l => l.Id == id);
         }
 
-        public List<BankAccount> GetBankAccounts(User user)
+        public List<User> GetUsers()
+        {
+            return context_.Users.ToList();
+        }
+
+        public async Task<List<BankAccount>> GetBankAccounts(User user)
         {
             return context_.BankAccounts
                 .Where(l => l.User == user)
@@ -167,10 +172,7 @@ namespace BankAdministration.Web.Services
 
         public bool CheckBankAccount(string newBankAccountNumber)
         {
-            int pincode;
             return context_.BankAccounts.SingleOrDefault(i => i.Number == newBankAccountNumber) == null;
-            //var aaa = context_.Users.Single(i => i.Pincode == pincode && i.BankAccounts.First().Number == newBankAccountNumber) == null;
         }
-
     }
 }

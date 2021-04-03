@@ -17,11 +17,7 @@
                 <select asp-for="TransactionType" class="form-control"></select>
                 <span asp-validation-for="TransactionType" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="SourceAccountNumber" class="control-label"></label>
-                <input asp-for="SourceAccountNumber" class="form-control" />
-                <span asp-validation-for="SourceAccountNumber" class="text-danger"></span>
-            </div>
+            @*TODO if transfer then show this field*@
             <div class="form-group">
                 <label asp-for="DestinationAccountNumber" class="control-label"></label>
                 <input asp-for="DestinationAccountNumber" class="form-control" />
@@ -33,25 +29,6 @@
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="OldBalance" class="control-label"></label>
-                <input asp-for="OldBalance" class="form-control" />
-                <span asp-validation-for="OldBalance" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NewBalance" class="control-label"></label>
-                <input asp-for="NewBalance" class="form-control" />
-                <span asp-validation-for="NewBalance" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TransactionTime" class="control-label"></label>
-                <input asp-for="TransactionTime" class="form-control" />
-                <span asp-validation-for="TransactionTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BankAccountId" class="control-label"></label>
-                <select asp-for="BankAccountId" class ="form-control" asp-items="ViewBag.BankAccountId"></select>
-            </div>
-            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -59,7 +36,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="">Back to transaction list</a>
 </div>
 
 @section Scripts {

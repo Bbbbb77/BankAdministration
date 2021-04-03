@@ -18,18 +18,26 @@ namespace BankAdministration.Web.Models
         [Key]
         public Int32 Id { get; set; }
 
+        [Required]
         public TransactionTypeEnum TransactionType { get; set; }
 
+        [Required]
         public string SourceAccountNumber { get; set; }
 
+        [Required]
         public string DestinationAccountNumber { get; set; }
 
+        [Required]
+        public String DestinationAccountUserName { get; set; }
+
+        [Required]
         public Int64 Amount { get; set; }
 
         public Int64 OldBalance { get; set; }
 
         public Int64 NewBalance { get; set; }
 
+        [Required]
         public DateTime TransactionTime { get; set; }
 
         [Required]

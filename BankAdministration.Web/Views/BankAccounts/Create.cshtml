@@ -4,9 +4,8 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Create BankAccount</h1>
 
-<h4>BankAccount</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,8 +13,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Number" class="control-label"></label>
-                <input asp-for="Number" class="form-control" />
-                <span asp-validation-for="Number" class="text-danger"></span>
+                <p>@ViewData["CreateNewBankAccount"]</p>
             </div>
             <div class="form-group">
                 <label asp-for="Balance" class="control-label"></label>
@@ -28,11 +26,6 @@
                 </label>
             </div>
             <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" />
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -40,7 +33,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Back to BankAccounts</a>
 </div>
 
 @section Scripts {

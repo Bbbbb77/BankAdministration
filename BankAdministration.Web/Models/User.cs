@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Identity;
 namespace BankAdministration.Web.Models
 {
 	public class User : IdentityUser
-	{	
+	{
 		[Required]
+        public String FullName { get; set; }
+
+        [Required]
 		[MaxLength(6)]
 		[MinLength(6)]
 		public int Pincode { get; set; }

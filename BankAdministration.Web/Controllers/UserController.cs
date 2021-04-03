@@ -10,6 +10,7 @@ using BankAdministration.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
 using BankAdministration.Web.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace BankAdministration.Web.Controllers
 {
@@ -42,30 +43,35 @@ namespace BankAdministration.Web.Controllers
             ViewBag.ReturnUrl = returnUrl;
             if (ModelState.IsValid)
             {
-                //TODO Pincode and BankAccount check
-                var result = await signInManager_.PasswordSignInAsync(model.UserName,
-                                                                      model.Password,
-                                                                      isPersistent: false,
-                                                                      lockoutOnFailure: false);
+                /*bool pincodeBankAccountCheck = service_  //Argument nullexception
+                    .GetUsers()
+                    .Where(u => u.Pincode == model.Pincode &&
+                                u.UserName == model.UserName &&
+                                u.BankAccounts.First().Number == model.BankAccount )
+                    .Any();
 
-                //service_.GetUserById(userManager_.GetUserId());
-
-                //bool pincodeBankAccountCheck;
-
-
-
-                if (result.Succeeded)
+                if (!pincodeBankAccountCheck)
                 {
-                    return RedirectToAction(nameof(BankAccountsController.Index), "BankAccounts");
-                    //return RedirectToLocal(returnUrl);
-                }
+                    ModelState.AddModelError("", "Pincode or BankAccount is invalid");
+                    return View("Login", "User");
+                }*/
 
-                /*string safeMode = model.IsSafeMode ? "true" : "false";
+                var result = await signInManager_.PasswordSignInAsync(model.UserName,
+                                                      model.Password,
+                                                      isPersistent: false,
+                                                      lockoutOnFailure: false);
+
+                string safeMode = model.IsSafeMode ? "true" : "false";
                 HttpContext.Session.SetString("SafeMode", safeMode);
                 if (safeMode == "true")
                 {
                     HttpContext.Session.SetString("UserIsAuthorized", "false");
-                }*/
+                }
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction(nameof(BankAccountsController.Index), "BankAccounts");
+                }          
 
                 ModelState.AddModelError("", "Unsuccesful log in!");
                 return View(model);
@@ -130,10 +136,10 @@ namespace BankAdministration.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout() //TODO redirect to login page
+        public async Task<IActionResult> Logout()
         {
             await signInManager_.SignOutAsync();
-            return RedirectToAction("Login", "User");
+            return RedirectToAction("Index", "Home");
         }
 
         private IActionResult RedirectToLocal(string returnUrl)

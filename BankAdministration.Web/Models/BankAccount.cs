@@ -19,9 +19,13 @@ namespace BankAdministration.Web.Models
 
         public Boolean IsLocked  { get; set; }
 
+		[Required]
+        public DateTime CreatedDate { get; set; }
+
         public ICollection<Transaction> Transactions { get; set; }
 
 		[Required]
+		[DisplayName("User")]
 		public Int32 UserId { get; set; }
         
 		public virtual User User { get; set; }
