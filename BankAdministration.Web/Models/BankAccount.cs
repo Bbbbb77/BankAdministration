@@ -26,7 +26,7 @@ namespace BankAdministration.Web.Models
 
 		[Required]
 		[DisplayName("User")]
-		public Int32 UserId { get; set; }
+		public string UserId { get; set; }
         
 		public virtual User User { get; set; }
 	}

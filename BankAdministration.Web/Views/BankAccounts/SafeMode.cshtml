@@ -1,0 +1,27 @@
+﻿@model SafeModeViewModel
+@{
+    ViewData["Title"] = "SafeMode";
+}
+
+<h2>Safe Mode Check</h2>
+
+<p>Please provide your username and password!</p>
+<div class="row">
+    <div class="col-md-2">
+        <form asp-controller="BankAccounts" asp-action="SafeMode" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="UserName"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <button class="btn btn-default" type="submit">Submit</button>
+        </form>
+    </div>
+</div>

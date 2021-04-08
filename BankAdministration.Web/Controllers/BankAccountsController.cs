@@ -22,7 +22,9 @@ namespace BankAdministration.Web.Controllers
         private readonly SignInManager<User> signInManager_;
         private readonly IBankAdministrationService service_;
 
-        public BankAccountsController(UserManager<User> userManager, SignInManager<User> signInManager, IBankAdministrationService service)
+        public BankAccountsController(UserManager<User> userManager, 
+                                      SignInManager<User> signInManager, 
+                                      IBankAdministrationService service)
         {
             userManager_ = userManager;
             signInManager_ = signInManager;
@@ -44,7 +46,7 @@ namespace BankAdministration.Web.Controllers
         {
             User user = await CurrentUser();
             return View(await service_
-                    .GetBankAccounts(user));
+                    .GetBankAccountsByUser(user));
         }
 
         // GET: BankAccounts/Details/5
@@ -77,82 +79,33 @@ namespace BankAdministration.Web.Controllers
         }
 
         // POST: BankAccounts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        /*[HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Number,Balance,IsLocked,UserId")] BankAccount bankAccount)
         {
             if (ModelState.IsValid)
             {
-                service_.Add(bankAccount);
-                await service_.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(bankAccount);
-        }*/
-
-        // GET: BankAccounts/Edit/5
-        /*public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var bankAccount = await service_.BankAccounts.FindAsync(id);
-            if (bankAccount == null)
-            {
-                return NotFound();
-            }
-            return View(bankAccount);
-        }
-
-        // POST: BankAccounts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Number,Balance,IsLocked,UserId")] BankAccount bankAccount)
-        {
-            if (id != bankAccount.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                bool result = service_.CreateBankAccount(bankAccount);
+                if(result)
                 {
-                    service_.Update(bankAccount);
-                    await service_.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!BankAccountExists(bankAccount.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError("", "Create BankAccount is unsuccessful!");
+                    //return NotFound();
                 }
-                return RedirectToAction(nameof(Index));
+
             }
             return View(bankAccount);
         }
 
         // GET: BankAccounts/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var bankAccount = await service_.BankAccounts
-                .FirstOrDefaultAsync(m => m.Id == id);
+            //TDOD transfer reaminig balance
+            var bankAccount = service_.GetBankAccountById(id);
+            
             if (bankAccount == null)
             {
                 return NotFound();
@@ -166,21 +119,44 @@ namespace BankAdministration.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var bankAccount = await service_.BankAccounts.FindAsync(id);
-            service_.BankAccounts.Remove(bankAccount);
-            await service_.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            var item = service_.GetBankAccountById(id);
+            if (item != null)
+            {
+                service_.DeleteBankAccount(id);
+                return RedirectToAction(nameof(Index));
+            }
 
-        private bool BankAccountExists(int id)
-        {
-            return service_.BankAccounts.Any(e => e.Id == id);
-        }*/
+            return NotFound();
+        }
 
         public IActionResult CreateTransaction(int id)
         {
-            TempData["TransactionId"] = id;
+            TempData["BankAccountId"] = id;
             return RedirectToAction("Create", "Transactions");
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> SafeMode()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SafeMode(SafeModeViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await signInManager_.PasswordSignInAsync(model.UserName,
+                                                                      model.Password,
+                                                                      isPersistent: false,
+                                                                      lockoutOnFailure: false);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction(nameof(BankAccountsController.Index), "BankAccounts");
+                }
+            }
+            return View(model);
         }
     }
 }

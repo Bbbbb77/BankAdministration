@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BankAdministration.Web.Migrations
 {
     [DbContext(typeof(BankAdministrationDbContext))]
-    [Migration("20210403121533_modelAdditions")]
-    partial class modelAdditions
+    [Migration("20210407193049_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,15 +42,13 @@ namespace BankAdministration.Web.Migrations
                         .HasColumnType("nvarchar(10)")
                         .HasMaxLength(10);
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("BankAccounts");
                 });
@@ -307,7 +305,9 @@ namespace BankAdministration.Web.Migrations
                 {
                     b.HasOne("BankAdministration.Web.Models.User", "User")
                         .WithMany("BankAccounts")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BankAdministration.Web.Models.Transaction", b =>

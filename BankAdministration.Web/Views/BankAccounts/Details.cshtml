@@ -1,7 +1,7 @@
 ﻿@model BankAdministration.Web.Models.BankAccount
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Details Transactions";
 }
 
 <h1>Transactions</h1>
@@ -19,31 +19,43 @@
     </thead>
     <tbody>
         @foreach (var transaction in Model.Transactions)
+        {
+            @if (transaction.TransactionTime >= DateTime.Now.AddMonths(-1))
             {
-        <tr>
-            <td>
-                <b>@Html.DisplayFor(model => transaction.TransactionType)</b>
-            </td>
-            <td>
-                <b>@Html.DisplayFor(model => transaction.DestinationAccountNumber)</b>
-            </td>
-            <td>
-                <b>@Html.DisplayFor(model => transaction.Amount)</b>
-            </td>
-            <td>
-                <b>@Html.DisplayFor(model => transaction.OldBalance)</b>
-            </td>
-            <td>
-                <b>@Html.DisplayFor(model => transaction.NewBalance)</b>
-            </td>
-            <td>
-                <b>@Html.DisplayFor(model => transaction.TransactionTime)</b>
-            </td>
-        </tr>
+                <tr>
+                    <td>
+                        <b>@Html.DisplayFor(model => transaction.TransactionType)</b>
+                    </td>
+                    <td>
+                        @if (transaction.TransactionType == TransactionTypeEnum.Deposit)
+                        {
+                            <p style="color:green"><b>+@Html.DisplayFor(model => transaction.DestinationAccountNumber)</b></p>
+                        }
+                        else
+                        {
+                            <p style="color:red"><b>-@Html.DisplayFor(model => transaction.DestinationAccountNumber)</b></p>
+                        }
+                    </td>
+                    <td>
+                        <b>@Html.DisplayFor(model => transaction.Amount)</b>
+                    </td>
+                    <td>
+                        <b>@Html.DisplayFor(model => transaction.OldBalance)</b>
+                    </td>
+                    <td>
+                        <b>@Html.DisplayFor(model => transaction.NewBalance)</b>
+                    </td>
+                    <td>
+                        <b>@Html.DisplayFor(model => transaction.TransactionTime)</b>
+                    </td>
+                </tr>
+                }
             }
     </tbody>
 </table>
 <div>
-    <a asp-action="CreateTransaction" asp-route-id="@Model.Id">New transaction</a> |
+    @if (!Model.IsLocked) { 
+        <a asp-action="CreateTransaction" asp-route-id="@Model.Id">New transaction |</a>
+    }
     <a asp-action="Index">Back to List</a>
 </div>

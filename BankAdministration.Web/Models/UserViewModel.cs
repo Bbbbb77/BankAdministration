@@ -33,6 +33,10 @@ namespace BankAdministration.Web.Models
         [Required]
         public string UserName { get; set; }
 
+        [DisplayName("FullName")]
+        [Required]
+        public string FullName { get; set; }
+
         [DisplayName("Password")]
         [Required]
         [DataType(DataType.Password)]

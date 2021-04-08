@@ -20,7 +20,9 @@ namespace BankAdministration.Web.Controllers
         private readonly SignInManager<User> signInManager_;
         private IBankAdministrationService service_;
 
-        public UserController(UserManager<User> userManager, SignInManager<User> signInManager, IBankAdministrationService service)
+        public UserController(UserManager<User> userManager, 
+                              SignInManager<User> signInManager, 
+                              IBankAdministrationService service)
         {
             userManager_ = userManager;
             signInManager_ = signInManager;
@@ -43,18 +45,35 @@ namespace BankAdministration.Web.Controllers
             ViewBag.ReturnUrl = returnUrl;
             if (ModelState.IsValid)
             {
-                /*bool pincodeBankAccountCheck = service_  //Argument nullexception
+                var userId = service_.GetUserIdByName(model.UserName);
+                if(userId == null)
+                {
+                    ModelState.AddModelError("", "User not exists!");
+                    return View("Login", model);
+                }
+
+                bool pincodeCheck = service_  //Argument nullexception
                     .GetUsers()
                     .Where(u => u.Pincode == model.Pincode &&
-                                u.UserName == model.UserName &&
-                                u.BankAccounts.First().Number == model.BankAccount )
+                                u.UserName == model.UserName)
                     .Any();
 
-                if (!pincodeBankAccountCheck)
+                if (!pincodeCheck)
                 {
-                    ModelState.AddModelError("", "Pincode or BankAccount is invalid");
-                    return View("Login", "User");
-                }*/
+                    ModelState.AddModelError("", "Pincode is invalid");
+                    return View("Login", model);
+                }
+
+                bool BankAccountCheck = service_  //Argument nullexception
+                                .GetBankAccounts()
+                                .Where(u => u.UserId == userId && u.Number == model.BankAccount)
+                                .Any();
+
+                if (!BankAccountCheck)
+                {
+                    ModelState.AddModelError("", "Pincode is invalid");
+                    return View("Login", model);
+                }
 
                 var result = await signInManager_.PasswordSignInAsync(model.UserName,
                                                       model.Password,
@@ -116,6 +135,7 @@ namespace BankAdministration.Web.Controllers
                 var user = new User
                 {
                     UserName = model.UserName,
+                    FullName = model.FullName,
                     Pincode = model.Pincode,
                     BankAccounts = new List<BankAccount> { bankAccount }
                 };
@@ -125,7 +145,8 @@ namespace BankAdministration.Web.Controllers
                 if (result.Succeeded)
                 {
                     await signInManager_.SignInAsync(user, isPersistent: false);
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToAction(nameof(BankAccountsController.Index), "BankAccounts");
+                    //return RedirectToAction(nameof(UserController.Login), "User");
                 }
 
                 ModelState.AddModelError("", "Unsuccesful registration!");

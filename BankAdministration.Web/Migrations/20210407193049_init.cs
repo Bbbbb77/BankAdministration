@@ -40,6 +40,7 @@ namespace BankAdministration.Web.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
+                    FullName = table.Column<string>(nullable: false),
                     Pincode = table.Column<int>(maxLength: 6, nullable: false)
                 },
                 constraints: table =>
@@ -162,18 +163,18 @@ namespace BankAdministration.Web.Migrations
                     Number = table.Column<string>(maxLength: 10, nullable: false),
                     Balance = table.Column<long>(nullable: false),
                     IsLocked = table.Column<bool>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    UserId1 = table.Column<string>(nullable: true)
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UserId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BankAccounts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BankAccounts_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_BankAccounts_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -183,8 +184,9 @@ namespace BankAdministration.Web.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TransactionType = table.Column<int>(nullable: false),
-                    SourceAccountNumber = table.Column<string>(nullable: true),
-                    DestinationAccountNumber = table.Column<string>(nullable: true),
+                    SourceAccountNumber = table.Column<string>(nullable: false),
+                    DestinationAccountNumber = table.Column<string>(nullable: false),
+                    DestinationAccountUserName = table.Column<string>(nullable: false),
                     Amount = table.Column<long>(nullable: false),
                     OldBalance = table.Column<long>(nullable: false),
                     NewBalance = table.Column<long>(nullable: false),
@@ -242,9 +244,9 @@ namespace BankAdministration.Web.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BankAccounts_UserId1",
+                name: "IX_BankAccounts_UserId",
                 table: "BankAccounts",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_BankAccountId",

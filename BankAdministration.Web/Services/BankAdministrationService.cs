@@ -28,7 +28,7 @@ namespace BankAdministration.Web.Services
             return context_.Users.ToList();
         }
 
-        public async Task<List<BankAccount>> GetBankAccounts(User user)
+        public async Task<List<BankAccount>> GetBankAccountsByUser(User user)
         {
             return context_.BankAccounts
                 .Where(l => l.User == user)
@@ -36,11 +36,9 @@ namespace BankAdministration.Web.Services
                 .ToList();
         }
 
-        public List<BankAccount> AllBankAccounts()
+        public List<BankAccount> GetBankAccounts()
         {
-            return context_.BankAccounts
-                .OrderBy(l => l.Id)
-                .ToList();
+            return context_.BankAccounts.ToList();
         }
 
         public BankAccount GetBankAccountById(int id)
@@ -173,6 +171,37 @@ namespace BankAdministration.Web.Services
         public bool CheckBankAccount(string newBankAccountNumber)
         {
             return context_.BankAccounts.SingleOrDefault(i => i.Number == newBankAccountNumber) == null;
+        }
+
+        public void TransferBetweenAccounts(string sourceAccount, string sestAccount, Int64 amount)
+        {
+            var sAccount = context_.BankAccounts.SingleOrDefault(i => i.Number == sourceAccount);
+            sAccount.Balance -= amount; 
+
+            var dAccount = context_.BankAccounts.SingleOrDefault(i => i.Number == sestAccount);
+            if(dAccount != null)
+            {
+                dAccount.Balance += amount;
+            }
+            context_.SaveChanges();
+        }
+
+        public BankAccount GetBankAccountByNumber(string number)
+        {
+            return context_.BankAccounts.SingleOrDefault(i => i.Number == number);
+        }
+
+        public string? GetUserIdByName(string username)
+        {
+            var user = context_.Users.SingleOrDefault(u => u.UserName == username);
+            if(user == null)
+            {
+                return null;
+            }
+            else
+            {
+                return user.Id;
+            } 
         }
     }
 }
