@@ -5,7 +5,7 @@ namespace BankAdministration.Web.Models
 {
     public class SafeModeViewModel
     {
-        [DisplayName("UserName")]
+        [DisplayName("Username")]
         [Required]
         public string UserName { get; set; }
 

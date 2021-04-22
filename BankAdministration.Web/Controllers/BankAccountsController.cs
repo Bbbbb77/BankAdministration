@@ -12,6 +12,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using System.Text;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 
 namespace BankAdministration.Web.Controllers
 {
@@ -44,6 +46,7 @@ namespace BankAdministration.Web.Controllers
         // GET: BankAccounts
         public async Task<IActionResult> Index()
         {
+            HttpContext.Session.SetString("UserIsAuthorized", "false");
             User user = await CurrentUser();
             return View(await service_
                     .GetBankAccountsByUser(user));
@@ -52,6 +55,7 @@ namespace BankAdministration.Web.Controllers
         // GET: BankAccounts/Details/5
        public async Task<IActionResult> Details(int id)
         {
+            HttpContext.Session.SetString("UserIsAuthorized", "false");
             var bankAccount = service_.GetBankAccountById(id);
             if (bankAccount == null)
             {
@@ -64,6 +68,15 @@ namespace BankAdministration.Web.Controllers
         // GET: BankAccounts/Create
         public IActionResult Create()
         {
+            if(HttpContext.Session.GetString("SafeMode") == "true")
+            {
+                if(HttpContext.Session.GetString("UserIsAuthorized") == "false")
+                {
+                    HttpContext.Session.SetString("SafeModeAction", "BankAccountsCreate");
+                    return RedirectToAction(nameof(SafeMode),"BankAccounts");
+                }
+            }
+
             var newBankAccount = new StringBuilder(10);
             var random = new Random();
 
@@ -81,31 +94,55 @@ namespace BankAdministration.Web.Controllers
         // POST: BankAccounts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Number,Balance,IsLocked,UserId")] BankAccount bankAccount)
+        public async Task<IActionResult> Create(CreateBankAccountViewModel bankAccountModel)
         {
             if (ModelState.IsValid)
             {
+                User user = await CurrentUser();
+                BankAccount bankAccount = new BankAccount
+                {
+                    Number = bankAccountModel.Number,
+                    Balance = bankAccountModel.Balance,
+                    IsLocked = bankAccountModel.IsLocked,
+                    CreatedDate = DateTime.Now.Date,
+                    User = user
+                };
+
                 bool result = service_.CreateBankAccount(bankAccount);
                 if(result)
                 {
+                    HttpContext.Session.SetString("UserIsAuthorized", "false");
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
                     ModelState.AddModelError("", "Create BankAccount is unsuccessful!");
-                    //return NotFound();
                 }
 
             }
-            return View(bankAccount);
+            return View(bankAccountModel);
         }
 
         // GET: BankAccounts/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            //TDOD transfer reaminig balance
-            var bankAccount = service_.GetBankAccountById(id);
+            ViewData["DetailsId"] = id;
             
+            if (HttpContext.Session.GetString("SafeMode") == "true")
+            {
+                if (HttpContext.Session.GetString("UserIsAuthorized") == "false")
+                {
+                    HttpContext.Session.SetInt32("DetailsId", id);
+                    HttpContext.Session.SetString("SafeModeAction", "BankAccountsDelete");
+                    return RedirectToAction(nameof(SafeMode), "BankAccounts");
+                }
+            }
+
+            //TDOD transfer reaminig balance
+            //var bankAccount = service_.GetBankAccountById(Int32.Parse(ViewData["DetailsId"].ToString()));
+            var dsds = HttpContext.Session.GetInt32("DetailsId");
+            var bankAccount = service_.GetBankAccountById( (int)HttpContext.Session.GetInt32("DetailsId"));
+
             if (bankAccount == null)
             {
                 return NotFound();
@@ -119,20 +156,30 @@ namespace BankAdministration.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var item = service_.GetBankAccountById(id);
-            if (item != null)
+            var bankAccount = service_.GetBankAccountById(id);
+            if (bankAccount != null)
             {
-                service_.DeleteBankAccount(id);
-                return RedirectToAction(nameof(Index));
+                bool result = service_.DeleteBankAccount(id);
+                if (result)
+                {
+                    HttpContext.Session.SetString("UserIsAuthorized", "false");
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Could not delete BankAccount!");
+                }
             }
 
-            return NotFound();
+            return View(bankAccount);
         }
 
         public IActionResult CreateTransaction(int id)
         {
-            TempData["BankAccountId"] = id;
-            return RedirectToAction("Create", "Transactions");
+            ViewData["BankAccountId"] = id;
+            //HttpContext.Session.SetInt32("BankAccountId", id);
+            //return RedirectToAction("Create", "Transactions", new { BankAccountId = id });
+            return RedirectToAction("Create", new RouteValueDictionary(new { Controller = "Transactions", Action = "Create", Id = id }));
         }
 
 
@@ -141,22 +188,65 @@ namespace BankAdministration.Web.Controllers
         {
             return View();
         }
+        
 
         [HttpPost]
         public async Task<IActionResult> SafeMode(SafeModeViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await signInManager_.PasswordSignInAsync(model.UserName,
-                                                                      model.Password,
-                                                                      isPersistent: false,
-                                                                      lockoutOnFailure: false);
-                if (result.Succeeded)
+                if(model.Password == null)
                 {
-                    return RedirectToAction(nameof(BankAccountsController.Index), "BankAccounts");
+                    ModelState.AddModelError("", "Password is necessary to proceed further!");
+                    return View(model);
+                }
+
+                if (model.UserName == null)
+                {
+                    ModelState.AddModelError("", "UserName is necessary to proceed further!");
+                    return View(model);
+                }
+
+                User user = await CurrentUser();
+
+                bool userNameCheck = user.UserName == model.UserName;
+               
+                var result = userManager_
+                    .PasswordHasher
+                    .VerifyHashedPassword(user, user.PasswordHash, model.Password);
+
+                if (result != PasswordVerificationResult.Failed && userNameCheck)
+                {
+                    HttpContext.Session.SetString("UserIsAuthorized", "true");
+                    switch (HttpContext.Session.GetString("SafeModeAction"))
+                    {
+                        case "BankAccountsCreate": return RedirectToAction(nameof(BankAccountsController.Create), "BankAccounts");
+                        case "BankAccountsDelete": return RedirectToAction(nameof(BankAccountsController.Delete), "BankAccounts");
+                        case "TransactionCreate" : return RedirectToAction(nameof(TransactionsController.Create), "Transactions");
+                        default: return RedirectToAction(nameof(BankAccountsController.Index), "BankAccounts");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Username or password is not correct!");
                 }
             }
             return View(model);
+        }
+
+        public IActionResult Back()
+        {
+            
+            switch (HttpContext.Session.GetString("SafeModeAction"))
+            {
+                case "BankAccountsCreate": return RedirectToAction(nameof(BankAccountsController.Index), "BankAccounts");
+                case "BankAccountsDelete": return RedirectToAction(nameof(BankAccountsController.Index), "BankAccounts");
+                case "TransactionCreate":
+                    int bankAccountId = (int)HttpContext.Session.GetInt32("DetailsId");
+                    return RedirectToAction("Details", new RouteValueDictionary(
+                                            new { Controller = "BankAccounts", Action = "Details", Id = bankAccountId }));
+                default: return RedirectToAction(nameof(BankAccountsController.Index), "BankAccounts");
+            }
         }
     }
 }

@@ -1,7 +1,10 @@
-﻿@model BankAdministration.Web.Models.Transaction
+﻿@model BankAdministration.Web.Models.CreateTransactionViewModel
 
 @{
     ViewData["Title"] = "Create Transaction";
+
+    var id = Int32.Parse(ViewData["SourceAccountId"].ToString());
+    var number = ViewData["SourceAccountNumber"] as string;
 }
 
 <h1>Create Transaction</h1>
@@ -13,22 +16,25 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="TransactionType" class="control-label"></label>
-                @*@Html.DropDownListFor(m => m.TransactionType,
-        new SelectList(Enum.GetValues(typeof(TransactionTypeEnum))),
-        "Select transaction")
-                *@
-                <select asp-for="TransactionType" name="Select transaction" class="form-control">
-                    <option>Transfer</option>
-                    <option>Deposit</option>
-                    <option>Withdrawn</option>
+                <select asp-for="TransactionType" asp-items="Html.GetEnumSelectList<TransactionTypeEnum>()">
+                    <option selected="selected" value="">Please select</option>
                 </select>
                 <span asp-validation-for="TransactionType" class="text-danger"></span>
             </div>
-            @*TODO if transfer then show this field*@
+            <div class="form-group">
+                <label asp-for="SourceAccountNumber" class="control-label"></label>
+                <input asp-for="SourceAccountNumber" class="form-control" value="@number"  readonly/>
+                <span asp-validation-for="SourceAccountNumber" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="DestinationAccountNumber" class="control-label"></label>
                 <input asp-for="DestinationAccountNumber" class="form-control" />
                 <span asp-validation-for="DestinationAccountNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DestinationAccountUserName" class="control-label"></label>
+                <input asp-for="DestinationAccountUserName" class="form-control" />
+                <span asp-validation-for="DestinationAccountUserName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Amount" class="control-label"></label>
@@ -42,8 +48,8 @@
     </div>
 </div>
 
-<div>@*Bankaccount id-t elküldeni h mely transakciókat listázza ki*@
-    <a asp-action="BackToDetails" asp-route-id="">Back to transaction list</a>
+<div>
+    <a asp-controller="BankAccounts" asp-action="Details" asp-route-id="@id">Back to transaction list</a>
 </div>
 
 @section Scripts {

@@ -18,7 +18,7 @@ namespace BankAdministration.Web.Controllers
     {
         private readonly UserManager<User> userManager_;
         private readonly SignInManager<User> signInManager_;
-        private IBankAdministrationService service_;
+        private readonly IBankAdministrationService service_;
 
         public UserController(UserManager<User> userManager, 
                               SignInManager<User> signInManager, 
@@ -30,19 +30,17 @@ namespace BankAdministration.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Login(string returnUrl = null)
+        public async Task<IActionResult> Login()
         {
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-            ViewBag.ReturnUrl = returnUrl;
 
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
-            ViewBag.ReturnUrl = returnUrl;
             if (ModelState.IsValid)
             {
                 var userId = service_.GetUserIdByName(model.UserName);
@@ -52,7 +50,7 @@ namespace BankAdministration.Web.Controllers
                     return View("Login", model);
                 }
 
-                bool pincodeCheck = service_  //Argument nullexception
+                bool pincodeCheck = service_ 
                     .GetUsers()
                     .Where(u => u.Pincode == model.Pincode &&
                                 u.UserName == model.UserName)
@@ -64,14 +62,15 @@ namespace BankAdministration.Web.Controllers
                     return View("Login", model);
                 }
 
-                bool BankAccountCheck = service_  //Argument nullexception
+                bool BankAccountCheck = service_
                                 .GetBankAccounts()
                                 .Where(u => u.UserId == userId && u.Number == model.BankAccount)
                                 .Any();
+                //BankAccountCheck = service_;;
 
                 if (!BankAccountCheck)
                 {
-                    ModelState.AddModelError("", "Pincode is invalid");
+                    ModelState.AddModelError("", "Bankaccount number is invalid");
                     return View("Login", model);
                 }
 
@@ -100,10 +99,8 @@ namespace BankAdministration.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Register(string returnUrl = null)
+        public IActionResult Register()
         {
-            ViewBag.ReturnUrl = returnUrl;
-
             var newBankAccount = new StringBuilder(10);
             var random = new Random();
             
@@ -120,16 +117,16 @@ namespace BankAdministration.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            ViewBag.ReturnUrl = returnUrl;
             if (ModelState.IsValid)
             {
                 var bankAccount = new BankAccount
                 {
                     Number = model.BankAccount,
                     Balance = 0,
-                    IsLocked = false
+                    IsLocked = false,
+                    CreatedDate = DateTime.Today
                 };
 
                 var user = new User
@@ -146,7 +143,6 @@ namespace BankAdministration.Web.Controllers
                 {
                     await signInManager_.SignInAsync(user, isPersistent: false);
                     return RedirectToAction(nameof(BankAccountsController.Index), "BankAccounts");
-                    //return RedirectToAction(nameof(UserController.Login), "User");
                 }
 
                 ModelState.AddModelError("", "Unsuccesful registration!");
@@ -161,18 +157,6 @@ namespace BankAdministration.Web.Controllers
         {
             await signInManager_.SignOutAsync();
             return RedirectToAction("Index", "Home");
-        }
-
-        private IActionResult RedirectToLocal(string returnUrl)
-        {
-            if (Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-            else
-            {
-                return RedirectToAction(nameof(UserController.Login), "User");
-            }
         }
     }
 }

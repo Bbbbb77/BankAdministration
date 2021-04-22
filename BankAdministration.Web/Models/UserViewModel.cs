@@ -16,14 +16,17 @@ namespace BankAdministration.Web.Models
     
         [DisplayName("Pincode")]
         [Required]
+        [RegularExpression("^[0-9]{6}$", ErrorMessage =
+            "Pincode number must be exactly 6 numbers!")]
         public int Pincode { get; set; }
     
         [DisplayName("BankAccount")]
         [Required]
+        [RegularExpression("^[0-9]{10}$", ErrorMessage =
+            "BankAccount number must be exactly 10 numbers!")]
         public string BankAccount { get; set; }
 
         [DisplayName("SafeMode")]
-        [Required]
         public bool IsSafeMode { get; set; }
     }
 
@@ -44,6 +47,8 @@ namespace BankAdministration.Web.Models
 
         [DisplayName("Pincode")]
         [Required]
+        [RegularExpression("^[0-9]{6}$", ErrorMessage =
+            "Pincode number must be exactly 6 numbers!")]
         public int Pincode { get; set; }
 
         [DisplayName("BankAccount")]

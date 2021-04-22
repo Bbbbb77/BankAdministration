@@ -25,7 +25,7 @@ namespace BankAdministration.Web.Services
 
         public List<User> GetUsers()
         {
-            return context_.Users.ToList();
+            return context_.Users.Include(l => l.BankAccounts).ToList();
         }
 
         public async Task<List<BankAccount>> GetBankAccountsByUser(User user)
@@ -188,7 +188,7 @@ namespace BankAdministration.Web.Services
 
         public BankAccount GetBankAccountByNumber(string number)
         {
-            return context_.BankAccounts.SingleOrDefault(i => i.Number == number);
+            return context_.BankAccounts.Include(l => l.User).SingleOrDefault(i => i.Number == number);
         }
 
         public string? GetUserIdByName(string username)
