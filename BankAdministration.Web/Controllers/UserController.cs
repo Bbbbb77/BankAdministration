@@ -119,6 +119,8 @@ namespace BankAdministration.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
+            ViewData["NewBankAccount"] = model.BankAccount;
+
             if (ModelState.IsValid)
             {
                 var bankAccount = new BankAccount

@@ -44,6 +44,7 @@ namespace BankAdministration.Web.Controllers
         }
 
         // GET: BankAccounts
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             HttpContext.Session.SetString("UserIsAuthorized", "false");
@@ -53,6 +54,7 @@ namespace BankAdministration.Web.Controllers
         }
 
         // GET: BankAccounts/Details/5
+        [HttpGet]
        public async Task<IActionResult> Details(int id)
         {
             HttpContext.Session.SetString("UserIsAuthorized", "false");
@@ -66,6 +68,7 @@ namespace BankAdministration.Web.Controllers
         }
 
         // GET: BankAccounts/Create
+        [HttpGet]
         public IActionResult Create()
         {
             if(HttpContext.Session.GetString("SafeMode") == "true")
@@ -124,6 +127,7 @@ namespace BankAdministration.Web.Controllers
         }
 
         // GET: BankAccounts/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             ViewData["DetailsId"] = id;
@@ -176,9 +180,6 @@ namespace BankAdministration.Web.Controllers
 
         public IActionResult CreateTransaction(int id)
         {
-            ViewData["BankAccountId"] = id;
-            //HttpContext.Session.SetInt32("BankAccountId", id);
-            //return RedirectToAction("Create", "Transactions", new { BankAccountId = id });
             return RedirectToAction("Create", new RouteValueDictionary(new { Controller = "Transactions", Action = "Create", Id = id }));
         }
 

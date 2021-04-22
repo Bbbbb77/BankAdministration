@@ -25,6 +25,7 @@ namespace BankAdministration.Web.Controllers
         }
 
         // GET: Transactions/Create
+        [HttpGet]
         public IActionResult Create(int id)
         {
             if (HttpContext.Session.GetString("SafeMode") == "true")
@@ -58,15 +59,20 @@ namespace BankAdministration.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateTransactionViewModel transactionModel)
         {
+            var SourceAccount = service_.GetBankAccountByNumber(transactionModel.SourceAccountNumber);
+            ViewData["SourceAccountId"] = SourceAccount.Id;
+            ViewData["SourceAccountNumber"] = transactionModel.SourceAccountNumber;
             if (ModelState.IsValid)
             {
-                var SourceAccount = service_.GetBankAccountByNumber(transactionModel.SourceAccountNumber);
-                if(SourceAccount != null && SourceAccount.Balance < transactionModel.Amount)
+                if(SourceAccount != null && 
+                   SourceAccount.Balance < transactionModel.Amount && 
+                   transactionModel.TransactionType != TransactionTypeEnum.Deposit)
                 {
                     ModelState.AddModelError("", "Transaction amount cannot be bigger the balance!");
                     return View(transactionModel);
                 }
 
+                Int64 oldBalance = SourceAccount.Balance;
                 Int64 newBalance;
                 if(transactionModel.TransactionType == TransactionTypeEnum.Deposit)
                 {
@@ -76,7 +82,7 @@ namespace BankAdministration.Web.Controllers
                 else
                 {
                     newBalance = SourceAccount.Balance - transactionModel.Amount;
-                    SourceAccount.Balance += transactionModel.Amount;
+                    SourceAccount.Balance -= transactionModel.Amount;
                 }
                 service_.UpdateBankAccount(SourceAccount);
 
@@ -87,7 +93,7 @@ namespace BankAdministration.Web.Controllers
                     DestinationAccountNumber = transactionModel.DestinationAccountNumber,
                     DestinationAccountUserName = transactionModel.DestinationAccountUserName,
                     Amount = transactionModel.Amount,
-                    OldBalance = SourceAccount.Balance,
+                    OldBalance = oldBalance,
                     NewBalance = newBalance,
                     TransactionTime = DateTime.Now.Date,
                     BankAccountId = SourceAccount.Id
@@ -107,18 +113,18 @@ namespace BankAdministration.Web.Controllers
                     {
                         if (destAccount.User.UserName == transactionModel.DestinationAccountUserName)
                         {
-                            Int64 oldBalance = destAccount.Balance;
+                            Int64 destOldBalance = destAccount.Balance;
                             Int64 destNewBalance = destAccount.Balance + transactionModel.Amount;
                             destAccount.Balance += transactionModel.Amount;
                             service_.UpdateBankAccount(destAccount);
                             transferTranasaction = new Transaction
                             {
-                                TransactionType = TransactionTypeEnum.Deposit,
-                                SourceAccountNumber = transactionModel.DestinationAccountNumber,
-                                DestinationAccountNumber = transactionModel.SourceAccountNumber,
+                                TransactionType = TransactionTypeEnum.Transfer,
+                                SourceAccountNumber = transactionModel.SourceAccountNumber,
+                                DestinationAccountNumber = transactionModel.DestinationAccountNumber,
                                 DestinationAccountUserName = destAccount.User.UserName,
                                 Amount = transactionModel.Amount,
-                                OldBalance = oldBalance,
+                                OldBalance = destOldBalance,
                                 NewBalance = destNewBalance,
                                 TransactionTime = DateTime.Now.Date,
                                 BankAccountId = destAccount.Id
