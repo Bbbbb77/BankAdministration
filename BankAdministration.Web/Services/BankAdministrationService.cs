@@ -16,13 +16,6 @@ namespace BankAdministration.Web.Services
             context_ = context;
         }
 
-        public User GetUserById(string id)
-        {
-            return context_.Users
-                .Include(l => l.BankAccounts)
-                .FirstOrDefault(l => l.Id == id);
-        }
-
         public List<User> GetUsers()
         {
             return context_.Users.Include(l => l.BankAccounts).ToList();
@@ -121,25 +114,6 @@ namespace BankAdministration.Web.Services
             {
                 context_.Add(transaction);
                 context_.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public bool UpdateTransaction(Transaction transaction)
-        {
-            try
-            {
-                context_.Update(transaction);
-                context_.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return false;
             }
             catch (DbUpdateException)
             {

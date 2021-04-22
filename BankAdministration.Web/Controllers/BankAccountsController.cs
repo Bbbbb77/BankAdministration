@@ -54,7 +54,7 @@ namespace BankAdministration.Web.Controllers
         }
 
         // GET: BankAccounts/Details/5
-        [HttpGet]
+       [HttpGet]
        public async Task<IActionResult> Details(int id)
         {
             HttpContext.Session.SetString("UserIsAuthorized", "false");
@@ -144,7 +144,7 @@ namespace BankAdministration.Web.Controllers
 
             //TDOD transfer reaminig balance
             //var bankAccount = service_.GetBankAccountById(Int32.Parse(ViewData["DetailsId"].ToString()));
-            var dsds = HttpContext.Session.GetInt32("DetailsId");
+            //var dsds = HttpContext.Session.GetInt32("DetailsId");
             var bankAccount = service_.GetBankAccountById( (int)HttpContext.Session.GetInt32("DetailsId"));
 
             if (bankAccount == null)

@@ -62,11 +62,7 @@ namespace BankAdministration.Web.Controllers
                     return View("Login", model);
                 }
 
-                bool BankAccountCheck = service_
-                                .GetBankAccounts()
-                                .Where(u => u.UserId == userId && u.Number == model.BankAccount)
-                                .Any();
-                //BankAccountCheck = service_;;
+                bool BankAccountCheck = service_.GetBankAccounts().Where(u => u.UserId == userId).First().Number == model.BankAccount;
 
                 if (!BankAccountCheck)
                 {
