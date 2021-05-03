@@ -58,12 +58,12 @@ namespace BankAdministration.Web.Controllers
        public async Task<IActionResult> Details(int id)
         {
             HttpContext.Session.SetString("UserIsAuthorized", "false");
-            var bankAccount = service_.GetBankAccountById(id);
+            User user = await CurrentUser();
+            var bankAccount = service_.GetBankAccountByUserAndId(user, id);
             if (bankAccount == null)
             {
                 return NotFound();
             }
-
             return View(bankAccount);
         }
 
@@ -142,17 +142,23 @@ namespace BankAdministration.Web.Controllers
                 }
             }
 
-            //TDOD transfer reaminig balance
-            //var bankAccount = service_.GetBankAccountById(Int32.Parse(ViewData["DetailsId"].ToString()));
-            //var dsds = HttpContext.Session.GetInt32("DetailsId");
-            var bankAccount = service_.GetBankAccountById( (int)HttpContext.Session.GetInt32("DetailsId"));
+            BankAccount acc;
+            User user = await CurrentUser();
+            if (HttpContext.Session.GetInt32("DetailsId") == null)
+            {
+                acc = service_.GetBankAccountByUserAndId(user, id);
+            }
+            else
+            {
 
-            if (bankAccount == null)
+                acc = service_.GetBankAccountByUserAndId(user, (int)HttpContext.Session.GetInt32("DetailsId"));
+            }
+            if (acc == null)
             {
                 return NotFound();
             }
 
-            return View(bankAccount);
+            return View(acc);
         }
 
         // POST: BankAccounts/Delete/5

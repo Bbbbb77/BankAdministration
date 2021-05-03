@@ -27,7 +27,8 @@ namespace BankAdministration.Web.Models
             {
                 UserName = "Anna",
                 FullName = "Nagy Anna",
-                Pincode = 123456
+                Pincode = 123456,
+                BankAccounts = null
             };
 
             List<BankAccount> bankAccounts1 = new List<BankAccount>();
@@ -38,7 +39,6 @@ namespace BankAdministration.Web.Models
                 IsLocked = false,
                 CreatedDate = DateTime.Parse("2/2/2021"),
                 Transactions = null,
-                UserId = testUser1.Id,
                 User = testUser1
             };
             var bankAccount2 = new BankAccount
@@ -47,8 +47,7 @@ namespace BankAdministration.Web.Models
                 Balance = 5555,
                 IsLocked = true,
                 CreatedDate = DateTime.Parse("1/1/2021"),
-                Transactions = null,
-                UserId = testUser1.Id,
+                Transactions = new List<Transaction>(),
                 User = testUser1
             };
             bankAccounts1.Add(bankAccount1);
@@ -66,7 +65,6 @@ namespace BankAdministration.Web.Models
                     OldBalance = 0,
                     NewBalance = 7000,
                     TransactionTime = DateTime.Parse("2/1/2021"),
-                    BankAccountId = bankAccount1.Id,
                     BankAccount = bankAccount1
                 }
             );
@@ -81,14 +79,13 @@ namespace BankAdministration.Web.Models
                     OldBalance = 7000,
                     NewBalance = 1000,
                     TransactionTime = DateTime.Parse("5/4/2021"),
-                    BankAccountId = bankAccount1.Id,
                     BankAccount = bankAccount1
                 }
             );
 
             bankAccount1.Transactions = transactions1;
             testUser1.BankAccounts = bankAccounts1;
-            userManager_.CreateAsync(testUser1, "Alma123");
+            var res1 = userManager_.CreateAsync(testUser1, "Alma123").Result;
 
             #endregion
 
@@ -97,9 +94,10 @@ namespace BankAdministration.Web.Models
 
             User testUser2 = new User
             {
-                UserName = "Béla",
+                UserName = "Bela",
                 FullName = "Kovács Béla",
-                Pincode = 654321
+                Pincode = 654321,
+                BankAccounts = null
             };
 
             List<BankAccount> bankAccounts2 = new List<BankAccount>();
@@ -109,14 +107,13 @@ namespace BankAdministration.Web.Models
                 Balance = 1000,
                 IsLocked = false,
                 CreatedDate = DateTime.Parse("3/3/2021"),
-                Transactions = null,
-                UserId = testUser2.Id,
+                Transactions = new List<Transaction>(),
                 User = testUser2
             };
-            bankAccounts1.Add(bankAccount11);
+            bankAccounts2.Add(bankAccount11);
 
             testUser2.BankAccounts = bankAccounts2;
-            userManager_.CreateAsync(testUser2, "Banana123");
+            var res2 = userManager_.CreateAsync(testUser2, "Banana123").Result;
 
             #endregion
 

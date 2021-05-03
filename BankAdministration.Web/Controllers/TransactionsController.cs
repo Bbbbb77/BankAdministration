@@ -11,22 +11,35 @@ using Microsoft.AspNetCore.Identity;
 using BankAdministration.Web.Services;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace BankAdministration.Web.Controllers
 {
     [Authorize]
     public class TransactionsController : Controller
     {
+        private readonly UserManager<User> userManager_;
         private readonly IBankAdministrationService service_;
 
-        public TransactionsController(IBankAdministrationService service)
+        public TransactionsController(UserManager<User> userManager, IBankAdministrationService service)
         {
+            userManager_ = userManager;
             service_ = service;
+        }
+
+        private async Task<User> CurrentUser()
+        {
+            ClaimsPrincipal currentUser = this.User;
+            string currentUserId = currentUser
+                .FindFirst(ClaimTypes.NameIdentifier).Value;
+            User user = await userManager_.FindByIdAsync(currentUserId);
+
+            return user;
         }
 
         // GET: Transactions/Create
         [HttpGet]
-        public IActionResult Create(int id)
+        public async Task<IActionResult> Create(int id)
         {
             if (HttpContext.Session.GetString("SafeMode") == "true")
             {
@@ -39,14 +52,25 @@ namespace BankAdministration.Web.Controllers
             }
 
             BankAccount acc;
-
-            if(HttpContext.Session.GetInt32("DetailsId") == null)
+            User user = await CurrentUser();
+            if (HttpContext.Session.GetInt32("DetailsId") == null)
             {
-                acc = service_.GetBankAccountById(id);
+                acc = service_.GetBankAccountByUserAndId(user, id);
             }
             else
             {
-                acc = service_.GetBankAccountById((int)HttpContext.Session.GetInt32("DetailsId"));
+                
+                acc = service_.GetBankAccountByUserAndId(user, (int)HttpContext.Session.GetInt32("DetailsId"));
+            }
+
+            if (acc == null)
+            {
+                return NotFound();
+            }
+
+            if (acc.IsLocked)
+            {
+                return NotFound();
             }
 
             ViewData["SourceAccountNumber"] = acc.Number;
@@ -103,11 +127,6 @@ namespace BankAdministration.Web.Controllers
                 bool transferResult = false;
                 if (transactionModel.TransactionType == TransactionTypeEnum.Transfer)
                 {
-                    service_.TransferBetweenAccounts(
-                    transactionModel.SourceAccountNumber,
-                    transactionModel.DestinationAccountNumber,
-                    transactionModel.Amount);
-
                     BankAccount destAccount = service_.GetBankAccountByNumber(transactionModel.DestinationAccountNumber);
                     if(destAccount != null)
                     {
@@ -115,11 +134,10 @@ namespace BankAdministration.Web.Controllers
                         {
                             Int64 destOldBalance = destAccount.Balance;
                             Int64 destNewBalance = destAccount.Balance + transactionModel.Amount;
-                            destAccount.Balance += transactionModel.Amount;
                             service_.UpdateBankAccount(destAccount);
                             transferTranasaction = new Transaction
                             {
-                                TransactionType = TransactionTypeEnum.Transfer,
+                                TransactionType = TransactionTypeEnum.Deposit,
                                 SourceAccountNumber = transactionModel.SourceAccountNumber,
                                 DestinationAccountNumber = transactionModel.DestinationAccountNumber,
                                 DestinationAccountUserName = destAccount.User.UserName,
@@ -143,6 +161,10 @@ namespace BankAdministration.Web.Controllers
                             return View(transactionModel);
                         }
                     }
+                    service_.TransferBetweenAccounts(
+                    transactionModel.SourceAccountNumber,
+                    transactionModel.DestinationAccountNumber,
+                    transactionModel.Amount);
 
                 }
                 

@@ -23,5 +23,6 @@ namespace BankAdministration.Web.Services
         void TransferBetweenAccounts(string sourceAccount, string destAccount, Int64 amount);
         BankAccount GetBankAccountByNumber(string number);
         string? GetUserIdByName(string username);
+        BankAccount GetBankAccountByUserAndId(User user, int id);
     }
 }

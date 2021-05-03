@@ -177,5 +177,12 @@ namespace BankAdministration.Web.Services
                 return user.Id;
             } 
         }
+
+        public BankAccount GetBankAccountByUserAndId(User user, int id)
+        {
+            return context_.BankAccounts.Include(l => l.User)
+                                        .Include(l => l.Transactions)
+                                        .SingleOrDefault(i => i.Id == id && i.User == user);
+        }
     }
 }
