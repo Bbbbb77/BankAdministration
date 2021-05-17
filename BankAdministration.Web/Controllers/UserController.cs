@@ -9,8 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using BankAdministration.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
-using BankAdministration.Web.Services;
+using BankAdministration.Persistence.Services;
 using Microsoft.AspNetCore.Http;
+using BankAdministration.Persistence.Models;
 
 namespace BankAdministration.Web.Controllers
 {

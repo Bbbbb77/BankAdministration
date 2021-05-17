@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace BankAdministration.Web.Models
+namespace BankAdministration.Persistence.Models
 {
 	public class BankAdministrationDbContext : IdentityDbContext<User>
     {

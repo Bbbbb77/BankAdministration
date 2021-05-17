@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankAdministration.Web", "BankAdministration.Web\BankAdministration.Web.csproj", "{900CFAAD-7F25-43B1-A482-E4DFF170B3BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankAdministration.Persistence", "BankAdministration.Persistence\BankAdministration.Persistence.csproj", "{016C7631-1012-4D0F-B64A-DABF1CC96FE5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankAdministration.WebApi", "BankAdministration.WebApi\BankAdministration.WebApi.csproj", "{006C041B-F21C-42B8-8294-72EFB121C8CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{900CFAAD-7F25-43B1-A482-E4DFF170B3BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{900CFAAD-7F25-43B1-A482-E4DFF170B3BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{900CFAAD-7F25-43B1-A482-E4DFF170B3BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{016C7631-1012-4D0F-B64A-DABF1CC96FE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{016C7631-1012-4D0F-B64A-DABF1CC96FE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{016C7631-1012-4D0F-B64A-DABF1CC96FE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{016C7631-1012-4D0F-B64A-DABF1CC96FE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{006C041B-F21C-42B8-8294-72EFB121C8CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{006C041B-F21C-42B8-8294-72EFB121C8CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{006C041B-F21C-42B8-8294-72EFB121C8CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{006C041B-F21C-42B8-8294-72EFB121C8CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

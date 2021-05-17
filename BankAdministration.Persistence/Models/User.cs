@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
-namespace BankAdministration.Web.Models
+namespace BankAdministration.Persistence.Models
 {
 	public class User : IdentityUser
 	{

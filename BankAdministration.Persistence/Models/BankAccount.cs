@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace BankAdministration.Web.Models
+namespace BankAdministration.Persistence.Models
 {
 	public class BankAccount
 	{

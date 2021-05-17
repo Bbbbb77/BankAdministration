@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace BankAdministration.Web.Migrations
+namespace BankAdministration.Persistence.Migrations
 {
     public partial class init : Migration
     {

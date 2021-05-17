@@ -7,13 +7,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BankAdministration.Web.Models;
 using Microsoft.AspNetCore.Authorization;
-using BankAdministration.Web.Services;
+using BankAdministration.Persistence.Services;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using BankAdministration.Persistence.Models;
 
 namespace BankAdministration.Web.Controllers
 {

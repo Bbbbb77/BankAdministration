@@ -1,20 +1,20 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BankAdministration.Web.Models;
 using BankAdministration.Persistence.Models;
-using Microsoft.EntityFrameworkCore;
 using BankAdministration.Persistence.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
-
-namespace BankAdministration.Web
+namespace BankAdministration.WebApi
 {
     public class Startup
     {
@@ -28,12 +28,11 @@ namespace BankAdministration.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddDbContext<BankAdministrationDbContext>(
                 options =>
-                {
-                    options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection"));
-                });
+                 {
+                     options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection"));
+                 });
 
             services.AddIdentity<User, IdentityRole>(options =>
             {
@@ -47,24 +46,16 @@ namespace BankAdministration.Web
             .AddDefaultTokenProviders();
 
             services.AddTransient<IBankAdministrationService, BankAdministrationService>();
-            services.AddControllersWithViews();
-
-            services.AddMvc().AddSessionStateTempDataProvider();
-            services.AddSession();
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
-            app.UseStaticFiles();
 
             app.UseRouting();
 
@@ -72,16 +63,10 @@ namespace BankAdministration.Web
 
             app.UseAuthorization();
 
-            app.UseSession();
-
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             });
-
-            //DbInitializer.Initialize(serviceProvider);
         }
     }
 }

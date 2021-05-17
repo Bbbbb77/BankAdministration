@@ -8,10 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using BankAdministration.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using BankAdministration.Web.Services;
+using BankAdministration.Persistence.Services;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using BankAdministration.Persistence.Models;
 
 namespace BankAdministration.Web.Controllers
 {

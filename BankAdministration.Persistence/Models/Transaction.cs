@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 
 
-namespace BankAdministration.Web.Models
+namespace BankAdministration.Persistence.Models
 {
     public enum TransactionTypeEnum
     {

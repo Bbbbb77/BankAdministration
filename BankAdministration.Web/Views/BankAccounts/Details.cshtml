@@ -1,4 +1,5 @@
-﻿@model BankAdministration.Web.Models.BankAccount
+﻿@model BankAdministration.Persistence.Models.BankAccount
+@using BankAdministration.Persistence.Models
 
 @{
     ViewData["Title"] = "Details Transactions";
@@ -58,7 +59,8 @@
     </tbody>
 </table>
 <div>
-    @if (!Model.IsLocked) { 
+    @if (!Model.IsLocked)
+    {
         <a asp-action="CreateTransaction" asp-route-id="@Model.Id">New transaction |</a>
     }
     <a asp-action="Index">Back to bankaccounts </a>

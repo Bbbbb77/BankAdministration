@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 
-namespace BankAdministration.Web.Models
+namespace BankAdministration.Persistence.Models
 {
     public static class DbInitializer
     {

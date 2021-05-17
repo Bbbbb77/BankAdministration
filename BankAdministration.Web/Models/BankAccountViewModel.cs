@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using BankAdministration.Persistence.Models;
 
 namespace BankAdministration.Web.Models
 {
