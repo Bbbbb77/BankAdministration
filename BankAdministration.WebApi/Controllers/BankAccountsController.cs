@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BankAdministration.Persistence.Models;
 using BankAdministration.Persistence.Services;
 using BankAdministration.Persistence.DTOS;
+using System.Diagnostics;
 
 namespace BankAdministration.WebApi.Controllers
 {
@@ -23,10 +24,27 @@ namespace BankAdministration.WebApi.Controllers
         }
 
         // GET: api/BankAccounts
-        [HttpGet]
+        /*[HttpGet]
         public ActionResult<IEnumerable<BankAccountDto>> GetBankAccounts()
         {
-            return service_.GetBankAccounts().Select(bankAccounts => (BankAccountDto)bankAccounts).ToList();
+            var result = service_.GetBankAccounts().Select(bankAccounts => (BankAccountDto)bankAccounts).ToList();
+            return result;
+        }*/
+
+        [HttpGet]
+        public async Task<IActionResult> GetBankAccountsByUserName(string userName)
+        {
+            try
+            {
+                Debug.WriteLine(userName);
+                var result = Ok((await service_.GetBankAccountsByUserName(userName))
+                    .Select(bankAccount => (BankAccountDto)bankAccount));
+                return result;
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         /*

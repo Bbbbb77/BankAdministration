@@ -29,6 +29,11 @@ namespace BankAdministration.Persistence.Services
                 .ToList();
         }
 
+        public async Task<List<BankAccount>> GetBankAccountsByUserName(string userName)
+        {
+            return context_.BankAccounts.Where(bankAccount => bankAccount.User.UserName == userName).ToList();
+        }
+
         public List<BankAccount> GetBankAccounts()
         {
             return context_.BankAccounts.ToList();
@@ -183,6 +188,14 @@ namespace BankAdministration.Persistence.Services
             return context_.BankAccounts.Include(l => l.User)
                                         .Include(l => l.Transactions)
                                         .SingleOrDefault(i => i.Id == id && i.User == user);
+        }
+
+        public async Task<List<Transaction>> GetTransactionsByAccountNumber(string bankAccountNumber)
+        {
+            var result = context_.Transactions
+                .Where(trans => trans.BankAccount.Number == bankAccountNumber)
+                .ToList();
+            return result;
         }
     }
 }

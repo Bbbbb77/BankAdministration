@@ -10,6 +10,7 @@ namespace BankAdministration.Persistence.Services
     {
         List<User> GetUsers();
         Task<List<BankAccount>> GetBankAccountsByUser(User user);
+        Task<List<BankAccount>> GetBankAccountsByUserName(string userName);
         List<BankAccount> GetBankAccounts();
         BankAccount GetBankAccountById(int id);
         bool CreateBankAccount(BankAccount bankAccount);
@@ -24,5 +25,6 @@ namespace BankAdministration.Persistence.Services
         BankAccount GetBankAccountByNumber(string number);
         string? GetUserIdByName(string username);
         BankAccount GetBankAccountByUserAndId(User user, int id);
+        Task<List<Transaction>> GetTransactionsByAccountNumber(string bankAccountNumber);
     }
 }

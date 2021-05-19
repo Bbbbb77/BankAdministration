@@ -18,7 +18,7 @@ namespace BankAdministration.Persistence.Models
             context_ = serviceProvider.GetRequiredService<BankAdministrationDbContext>();
             userManager_ = serviceProvider.GetRequiredService<UserManager<User>>();
 
-            context_.Database.EnsureDeleted();
+            //context_.Database.EnsureDeleted();
             context_.Database.Migrate();
 
             #region TestUser1

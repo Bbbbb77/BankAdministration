@@ -23,15 +23,13 @@ namespace BankAdministration.WebApi.Controllers
         }
 
         // GET: api/Transactions
-        [HttpGet("{bankAccountId}")]
-        public ActionResult<IEnumerable<TransactionDto>> GetTransactions(int bankAccountId)
+        [HttpGet]
+        public async Task<IActionResult> GetTransactions(string bankAccountNumber)
         {
             try
             {
-                return service_.GetBankAccountById(bankAccountId)
-                                .Transactions
-                                .Select(transaction => (TransactionDto)transaction)
-                                .ToList();
+                return Ok((await service_.GetTransactionsByAccountNumber(bankAccountNumber))
+                    .Select(transaction => (TransactionDto)transaction));
             }
             catch(Exception)
             {
