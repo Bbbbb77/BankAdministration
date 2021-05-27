@@ -7,6 +7,8 @@ namespace BankAdministration.Persistence.Models
 {
 	public class User : IdentityUser
 	{
+        public User() { }
+
 		[Required]
         public String FullName { get; set; }
 

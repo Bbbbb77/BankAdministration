@@ -29,9 +29,9 @@ namespace BankAdministration.Desktop.VModel
     {
         private ObservableCollection<BankAccountViewModel> bankAccounts_;
         private ObservableCollection<TransactionViewModel> transactions_;
-        private readonly BankAdministrationApiService service_;
         private BankAccountViewModel selectedBankAccount_;
         private TransactionViewModel selectedTransaction_;
+        private readonly BankAdministrationApiService service_;
 
         public ObservableCollection<BankAccountViewModel> BankAccounts
         {
@@ -63,6 +63,11 @@ namespace BankAdministration.Desktop.VModel
             }
         }
 
+        public bool IsSelectedBankAccountNull
+        {
+            get => selectedBankAccount_ is null;
+        }
+
         public TransactionViewModel SelectedTransaction
         {
             get => selectedTransaction_;
@@ -85,7 +90,23 @@ namespace BankAdministration.Desktop.VModel
 
         public DelegateCommand LogOutCommand { get; private set; }
 
+        public DelegateCommand NewDepositCommand { get; private set; }
+
+        public DelegateCommand NewWithdrawnCommand { get; private set; }
+
+        public DelegateCommand NewTransferCommand { get; private set; }
+
+        public DelegateCommand LockBankAccountCommand { get; private set; }
+
         public event EventHandler LogOutSucceeded;
+
+        public event EventHandler LockRequested;
+
+        public event EventHandler DepositRequested;
+
+        public event EventHandler TransferRequested;
+
+        public event EventHandler WithdrawnRequested;
 
         public MainViewModel(BankAdministrationApiService service)
         {
@@ -94,6 +115,11 @@ namespace BankAdministration.Desktop.VModel
             RefreshBankAccountCommand = new DelegateCommand(_ => LoadBankAccountsAsync());
             SelectBankAccountCommand = new DelegateCommand(_ => LoadTransactionsAsync(SelectedBankAccount));
             LogOutCommand = new DelegateCommand(_ => LogOutAsync());
+
+            NewDepositCommand = new DelegateCommand(_ => !(SelectedBankAccount is null),_ => NewDeposit());
+            NewWithdrawnCommand = new DelegateCommand(_ => !(SelectedBankAccount is null), _ => NewWithdrawn());
+            NewTransferCommand = new DelegateCommand(_ => !(SelectedBankAccount is null), _ => NewTransfer());
+            LockBankAccountCommand = new DelegateCommand(_ => !(SelectedBankAccount is null), _ => LockBankAccount());
         }
 
         private async void LogOutAsync()
@@ -156,10 +182,32 @@ namespace BankAdministration.Desktop.VModel
             }
         }
 
-        private async void BankAccounts_CollectionChanged(object sender,
+        private void BankAccounts_CollectionChanged(object sender,
             NotifyCollectionChangedEventArgs e){}
 
-        private async void Transactions_CollectionChanged(object sender,
+        private void Transactions_CollectionChanged(object sender,
             NotifyCollectionChangedEventArgs e){}
+
+        private void NewDeposit()
+        {
+            DepositRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void NewWithdrawn()
+        {
+            WithdrawnRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void NewTransfer()
+        {
+            TransferRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void LockBankAccount()
+        {
+            LockRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+
     }
 }

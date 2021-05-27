@@ -1,0 +1,43 @@
+﻿<Window x:Class="BankAdministration.Desktop.View.UserWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BankAdministration.Desktop.View"
+        xmlns:vModel="clr-namespace:BankAdministration.Desktop.VModel" 
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        mc:Ignorable="d"
+        Title="UserWindow" Height="250" Width="400">
+    <Window.Resources>
+        <vModel:SelectedUserConverter x:Key="selectedUserConverter" />
+    </Window.Resources>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_Log out" Command="{Binding LogOutCommand}" />
+        </Menu>
+        <Grid>
+            <GroupBox Grid.Row="0" Margin="0,0,0,0">
+                <GroupBox.Header>
+                    <Label Content="Users: " />
+                </GroupBox.Header>
+                <DataGrid ItemsSource="{Binding Users}"
+                          SelectedItem="{Binding SelectedUser, Converter={StaticResource selectedUserConverter}}"
+                          VerticalContentAlignment="Stretch" SelectionMode="Single" SelectionUnit="FullRow"
+                          CanUserAddRows="True" CanUserDeleteRows="True"
+                          AutoGenerateColumns="False" RenderTransformOrigin="0.502,0.731" Height="256">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction
+                                Command="{Binding SelectedUserCommand}" />
+                        </i:EventTrigger>
+
+                    </i:Interaction.Triggers>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="UserName" Binding="{Binding UserName}" Width="*" />
+                        <DataGridTextColumn Header="FullName" Binding="{Binding FullName}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+        </Grid>
+    </DockPanel>
+</Window>

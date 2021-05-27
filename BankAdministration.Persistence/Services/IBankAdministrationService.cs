@@ -26,5 +26,10 @@ namespace BankAdministration.Persistence.Services
         string? GetUserIdByName(string username);
         BankAccount GetBankAccountByUserAndId(User user, int id);
         Task<List<Transaction>> GetTransactionsByAccountNumber(string bankAccountNumber);
+        List<User> GetUsersForAdmin();
+        bool SetLocking(bool locking, string bankAccountNumber);
+        bool SetDeposit(Int64 amount, string bankAccountNumber);
+        bool SetTransfer(Int64 amount, string SourceNumber, string DestNumber, string DestUser);
+        bool SetWithdrawn(Int64 amount, string bankAccountNumber);
     }
 }

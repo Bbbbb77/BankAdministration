@@ -14,11 +14,11 @@ using BankAdministration.Desktop.VModel;
 namespace BankAdministration.Desktop.View
 {
     /// <summary>
-    /// Interaction logic for LoginWindow.xaml
+    /// Interaction logic for DepositWindow.xaml
     /// </summary>
-    public partial class LoginWindow : Window
+    public partial class DepositWindow : Window
     {
-        public LoginWindow()
+        public DepositWindow()
         {
             InitializeComponent();
         }

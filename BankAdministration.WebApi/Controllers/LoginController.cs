@@ -13,29 +13,36 @@ namespace BankAdministration.WebApi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class LoginController : ControllerBase
     {
-        private readonly SignInManager<User> _signInManager;
+        private readonly SignInManager<User> signInManager_;
+        private readonly UserManager<User> userManager_;
 
-        public UserController(SignInManager<User> signInManager)
+        public LoginController(SignInManager<User> signInManager, UserManager<User> userManager)
         {
-            _signInManager = signInManager;
+            signInManager_ = signInManager;
+            userManager_ = userManager;
         }
 
         // api/Account/Login
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginDto user)
         {
-            if (_signInManager.IsSignedIn(User))
-                await _signInManager.SignOutAsync();
+            if (signInManager_.IsSignedIn(User))
+                await signInManager_.SignOutAsync();
 
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, 
+            var result = await signInManager_.PasswordSignInAsync(user.UserName, 
                                                                   user.Password, 
                                                                   isPersistent: false,
                                                                   lockoutOnFailure: false);
 
             if (result.Succeeded)
             {
+                var admins = await userManager_.GetUsersInRoleAsync("administrator");
+                var currentUser = await userManager_.FindByNameAsync(user.UserName);
+                if (!admins.Contains(currentUser))
+                    return Unauthorized("Login failed! User is not administrator!");
+
                 return Ok();
             }
 
@@ -47,7 +54,7 @@ namespace BankAdministration.WebApi.Controllers
         [Authorize]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
+            await signInManager_.SignOutAsync();
 
             return Ok();
         }

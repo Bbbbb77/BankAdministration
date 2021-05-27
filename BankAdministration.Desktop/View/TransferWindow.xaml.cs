@@ -9,16 +9,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using BankAdministration.Desktop.VModel;
 
 namespace BankAdministration.Desktop.View
 {
     /// <summary>
-    /// Interaction logic for LoginWindow.xaml
+    /// Interaction logic for TransferWindow.xaml
     /// </summary>
-    public partial class LoginWindow : Window
+    public partial class TransferWindow : Window
     {
-        public LoginWindow()
+        public TransferWindow()
         {
             InitializeComponent();
         }

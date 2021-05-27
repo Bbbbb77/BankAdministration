@@ -1,0 +1,28 @@
+﻿<Window x:Class="BankAdministration.Desktop.View.WithdrawnWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BankAdministration.Desktop.View"
+        xmlns:vModel="clr-namespace:BankAdministration.Desktop.VModel"
+        mc:Ignorable="d"
+        Title="WithdrawnWindow" Height="100" Width="230">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <GroupBox Grid.Row="0">
+            <StackPanel>
+                <TextBlock Text="Amount of wirtdrawn." />
+                <TextBox x:Name="textbox" Width="150" Height="20" VerticalAlignment="Center" Text="{Binding WithdrawnAmount}"/>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Grid.Row="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <Button Width="50"  Height="21" Margin="5" Content="Yes" Command="{Binding YesCommand}" />
+                <Button Width="50"  Height="21" Margin="5" Content="No" Command="{Binding NoCommand}" />
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</Window>

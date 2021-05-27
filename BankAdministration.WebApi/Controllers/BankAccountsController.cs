@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace BankAdministration.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class BankAccountsController : ControllerBase
     {
@@ -24,19 +24,18 @@ namespace BankAdministration.WebApi.Controllers
         }
 
         // GET: api/BankAccounts
-        /*[HttpGet]
+        [HttpGet]
         public ActionResult<IEnumerable<BankAccountDto>> GetBankAccounts()
         {
             var result = service_.GetBankAccounts().Select(bankAccounts => (BankAccountDto)bankAccounts).ToList();
             return result;
-        }*/
-
+        }
+        
         [HttpGet]
         public async Task<IActionResult> GetBankAccountsByUserName(string userName)
         {
             try
             {
-                Debug.WriteLine(userName);
                 var result = Ok((await service_.GetBankAccountsByUserName(userName))
                     .Select(bankAccount => (BankAccountDto)bankAccount));
                 return result;
@@ -46,6 +45,65 @@ namespace BankAdministration.WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SetLock(LockDto dto)
+        {
+            try
+            {
+                var result = Ok((service_.SetLocking(dto.IsLocked, dto.Number)));
+                return result;
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> SetDeposit(DepositDto dto)
+        {
+            try
+            {
+                var result = Ok((service_.SetDeposit(dto.DepositAmount, dto.Number)));
+                return result;
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetTransfer(TransferDto dto)
+        {
+            try
+            {
+                var result = Ok((service_.SetTransfer(dto.TransferAmount, dto.SourceNumber,
+                                                        dto.DestNumber, dto.DestUserName)));
+                return result;
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetWithdrawn(WithdrawnDto dto)
+        {
+            try
+            {
+                var result = Ok((service_.SetWithdrawn(dto.WithdrawnAmount, dto.Number)));
+                return result;
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+        
+
 
         /*
         // GET: api/BankAccounts/5

@@ -34,7 +34,7 @@ namespace BankAdministration.WebApi
                      options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection"));
                  });
 
-            services.AddIdentity<User, IdentityRole>(options =>
+            services.AddIdentity<User, IdentityRole<string>>(options =>
             {
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 6;
@@ -42,7 +42,9 @@ namespace BankAdministration.WebApi
                 options.Password.RequireLowercase = true;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = true;
-            }).AddEntityFrameworkStores<BankAdministrationDbContext>()
+            })
+            //.AddRoleManager<RoleManager<IdentityRole<string>>>()
+            .AddEntityFrameworkStores<BankAdministrationDbContext>()
             .AddDefaultTokenProviders();
 
             services.AddTransient<IBankAdministrationService, BankAdministrationService>();

@@ -11,11 +11,6 @@
     <Window.Resources>
         <vModel:SelectedBankAccountConverter x:Key="selectedBankAccountConverter" />
     </Window.Resources>
-    <!--<i:Interaction.Triggers>
-        <i:EventTrigger EventName="ContentRendered">
-            <i:InvokeCommandAction Command="{Binding RefreshAccountsCommand}"/>
-        </i:EventTrigger>
-    </i:Interaction.Triggers>-->
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Refresh Accounts" Command="{Binding RefreshBankAccountCommand}" />
@@ -23,7 +18,8 @@
         </Menu>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="3*" />
             </Grid.RowDefinitions>
             <GroupBox Grid.Row="0">
@@ -40,33 +36,8 @@
                             <i:InvokeCommandAction
                                 Command="{Binding SelectBankAccountCommand}" />
                         </i:EventTrigger>
-                        <!--<i:EventTrigger EventName="AddingNewItem">
-                            <i:InvokeCommandAction
-                                PassEventArgsToCommand="True"
-                                Command="{Binding AddingNewAccountCommand}" />
-                        </i:EventTrigger>-->
+
                     </i:Interaction.Triggers>
-                    <!--
-                    <DataGrid.RowValidationRules>
-                        <viewModel:ListValidationRule ValidationStep="UpdatedValue"/>
-                    </DataGrid.RowValidationRules>
-                    <DataGrid.RowValidationErrorTemplate>
-                        <ControlTemplate>
-                            <Grid Margin="0,-2,0,-2"
-                                  ToolTip="{Binding
-                                    RelativeSource={RelativeSource FindAncestor,
-                                        AncestorType={x:Type DataGridRow}},
-                                        Path=(Validation.Errors)[0].ErrorContent}">
-                                <Ellipse StrokeThickness="0" Fill="Red" 
-                                         Width="{TemplateBinding FontSize}" 
-                                         Height="{TemplateBinding FontSize}" />
-                                <TextBlock Text="!" FontSize="{TemplateBinding FontSize}" 
-                                           FontWeight="Bold" Foreground="White" 
-                                           HorizontalAlignment="Center"  />
-                            </Grid>
-                        </ControlTemplate>
-                    </DataGrid.RowValidationErrorTemplate>
-                    -->
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Number" Binding="{Binding Number}" Width="*" />
                         <DataGridTextColumn Header="Balance" Binding="{Binding Balance}" Width="*" />
@@ -76,13 +47,22 @@
                 </DataGrid>
             </GroupBox>
             <GroupBox Grid.Row="1">
+                <StackPanel Orientation="Horizontal">
+                    <Button Width="100"  Height="21" Margin="5" Content="New deposit" Command="{Binding NewDepositCommand}" IsEnabled="{Binding SelectedBankAccount.IsNotLocked}"/>
+                    <Button Width="100"  Height="21" Margin="5" Content="New withdrawn" Command="{Binding NewWithdrawnCommand}" IsEnabled="{Binding SelectedBankAccount.IsNotLocked}"/>
+                    <Button Width="100"  Height="21" Margin="5" Content="New transfer" Command="{Binding NewTransferCommand}" IsEnabled="{Binding SelectedBankAccount.IsNotLocked}"/>
+                    <Button Width="120"  Height="21" Margin="5" Content="Lock bank account" Command="{Binding LockBankAccountCommand}" IsEnabled="{Binding IsSelectedBankAccountNull}"/>
+                    <!--binding available if there is selection-->
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Grid.Row="2" Margin="0,0,0,0">
                 <GroupBox.Header>
                     <Label Content="Transactions:" />
                 </GroupBox.Header>
                 <DataGrid ItemsSource="{Binding Transactions}"
                           SelectedItem="{Binding SelectedTransaction}"
                           IsReadOnly="True" AutoGenerateColumns="False"
-                          VerticalContentAlignment="Stretch" SelectionMode="Single">
+                          VerticalContentAlignment="Stretch" SelectionMode="Single" Height="290">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="TransactionType" Binding="{Binding TransactionType}" Width="*" />
                         <DataGridTextColumn Header="SourceAccountNumber" Binding="{Binding SourceAccountNumber}" Width="*" />

@@ -11,6 +11,7 @@ namespace BankAdministration.Desktop.VModel
         private Int64 balance_;
         private Boolean isLocked_;
         private DateTime createdDate_;
+        private Boolean isNotLocked;
 
         public String Number
         {
@@ -52,12 +53,23 @@ namespace BankAdministration.Desktop.VModel
             }
         }
 
+        public Boolean IsNotLocked
+        {
+            get => isNotLocked;
+            set
+            {
+                isNotLocked = value;
+                OnPropertyChanged();
+            }
+        }
+
         public static explicit operator BankAccountViewModel(BankAccountDto dto) => new BankAccountViewModel
         {
             Number = dto.Number,
             Balance = dto.Balance,
             IsLocked = dto.IsLocked,
-            CreatedDate = dto.CreatedDate
+            CreatedDate = dto.CreatedDate,
+            IsNotLocked = !dto.IsLocked
         };
 
         public static explicit operator BankAccountDto(BankAccountViewModel vm) => new BankAccountDto
