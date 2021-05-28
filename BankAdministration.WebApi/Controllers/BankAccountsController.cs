@@ -9,6 +9,7 @@ using BankAdministration.Persistence.Models;
 using BankAdministration.Persistence.Services;
 using BankAdministration.Persistence.DTOS;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BankAdministration.WebApi.Controllers
 {
@@ -25,6 +26,7 @@ namespace BankAdministration.WebApi.Controllers
 
         // GET: api/BankAccounts
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<BankAccountDto>> GetBankAccounts()
         {
             var result = service_.GetBankAccounts().Select(bankAccounts => (BankAccountDto)bankAccounts).ToList();
@@ -32,6 +34,7 @@ namespace BankAdministration.WebApi.Controllers
         }
         
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetBankAccountsByUserName(string userName)
         {
             try
@@ -47,6 +50,7 @@ namespace BankAdministration.WebApi.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> SetLock(LockDto dto)
         {
             try
@@ -61,6 +65,7 @@ namespace BankAdministration.WebApi.Controllers
         }
         
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> SetDeposit(DepositDto dto)
         {
             try
@@ -75,6 +80,7 @@ namespace BankAdministration.WebApi.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> SetTransfer(TransferDto dto)
         {
             try
@@ -90,6 +96,7 @@ namespace BankAdministration.WebApi.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> SetWithdrawn(WithdrawnDto dto)
         {
             try
@@ -102,88 +109,5 @@ namespace BankAdministration.WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-        
-
-
-        /*
-        // GET: api/BankAccounts/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<BankAccount>> GetBankAccount(int id)
-        {
-            var bankAccount = await service_.BankAccounts.FindAsync(id);
-
-            if (bankAccount == null)
-            {
-                return NotFound();
-            }
-
-            return bankAccount;
-        }
-
-        // PUT: api/BankAccounts/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutBankAccount(int id, BankAccount bankAccount)
-        {
-            if (id != bankAccount.Id)
-            {
-                return BadRequest();
-            }
-
-            service_.Entry(bankAccount).State = EntityState.Modified;
-
-            try
-            {
-                await service_.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BankAccountExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/BankAccounts
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<BankAccount>> PostBankAccount(BankAccount bankAccount)
-        {
-            service_.BankAccounts.Add(bankAccount);
-            await service_.SaveChangesAsync();
-
-            return CreatedAtAction("GetBankAccount", new { id = bankAccount.Id }, bankAccount);
-        }
-
-        // DELETE: api/BankAccounts/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<BankAccount>> DeleteBankAccount(int id)
-        {
-            var bankAccount = await service_.BankAccounts.FindAsync(id);
-            if (bankAccount == null)
-            {
-                return NotFound();
-            }
-
-            service_.BankAccounts.Remove(bankAccount);
-            await service_.SaveChangesAsync();
-
-            return bankAccount;
-        }
-
-        private bool BankAccountExists(int id)
-        {
-            return service_.BankAccounts.Any(e => e.Id == id);
-        }
-        */
     }
 }

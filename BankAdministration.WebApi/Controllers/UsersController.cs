@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BankAdministration.Persistence.Services;
 using BankAdministration.Persistence.Models;
 using BankAdministration.Persistence.DTOS;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BankAdministration.WebApi.Controllers
 {
@@ -22,6 +23,7 @@ namespace BankAdministration.WebApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "administrator")]
         public ActionResult<IEnumerable<UserDto>> GetUsersForAdmin()
         {
             try

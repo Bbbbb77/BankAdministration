@@ -87,7 +87,6 @@ namespace BankAdministration.Persistence.Models
 
             bankAccount1.Transactions = transactions1;
             testUser1.BankAccounts = bankAccounts1;
-            //testUser1.Id = Guid.NewGuid().ToString();
             var res1 = userManager_.CreateAsync(testUser1, "Alma123").Result;
 
             #endregion
@@ -116,7 +115,6 @@ namespace BankAdministration.Persistence.Models
             bankAccounts2.Add(bankAccount11);
 
             testUser2.BankAccounts = bankAccounts2;
-            //testUser2.Id = Guid.NewGuid().ToString();
             var res2 = userManager_.CreateAsync(testUser2, "Banana123").Result;
 
             #endregion
@@ -142,7 +140,6 @@ namespace BankAdministration.Persistence.Models
             };
             adminBankAccounts.Add(adminBankAccount);
             admin.BankAccounts = adminBankAccounts;
-            //admin.Id = Guid.NewGuid().ToString();
             var adminRole = new IdentityRole<string>("administrator");
             adminRole.Id = Guid.NewGuid().ToString();
             var res3 = userManager_.CreateAsync(admin, "Admin123").Result;
