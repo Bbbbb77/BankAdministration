@@ -31,7 +31,8 @@ namespace BankAdministration.Persistence.Services
 
         public async Task<List<BankAccount>> GetBankAccountsByUserName(string userName)
         {
-            return context_.BankAccounts.Where(bankAccount => bankAccount.User.UserName == userName).ToList();
+            var result = context_.BankAccounts.Where(bankAccount => bankAccount.User.UserName == userName).ToList();
+            return result;
         }
 
         public List<BankAccount> GetBankAccounts()
@@ -218,7 +219,7 @@ namespace BankAdministration.Persistence.Services
 
         public bool SetDeposit(Int64 amount, string bankAccountNumber)
         {
-            var bankAccount = GetBankAccountByNumber(bankAccountNumber);
+            var bankAccount = context_.BankAccounts.SingleOrDefault(i => i.Number == bankAccountNumber);
             if (bankAccount is null)
                 return false;
             var oldBalance = bankAccount.Balance;
@@ -244,7 +245,7 @@ namespace BankAdministration.Persistence.Services
 
         public bool SetTransfer(Int64 amount, string SourceNumber, string DestNumber, string DestUser)
         {
-            var srcBankAccount = GetBankAccountByNumber(SourceNumber);
+            var srcBankAccount = context_.BankAccounts.SingleOrDefault(i => i.Number == SourceNumber);
             if (srcBankAccount is null)
                 return false;
 
@@ -298,7 +299,7 @@ namespace BankAdministration.Persistence.Services
 
         public bool SetWithdrawn(Int64 amount, string bankAccountNumber)
         {
-            var bankAccount = GetBankAccountByNumber(bankAccountNumber);
+            var bankAccount = context_.BankAccounts.SingleOrDefault(i => i.Number == bankAccountNumber);
             if (bankAccount is null)
                 return false;
             if (bankAccount.Balance < amount)

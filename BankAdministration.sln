@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankAdministration.Persiste
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankAdministration.WebApi", "BankAdministration.WebApi\BankAdministration.WebApi.csproj", "{006C041B-F21C-42B8-8294-72EFB121C8CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankAdministration.Desktop", "BankAdministration.Desktop\BankAdministration.Desktop.csproj", "{F6C53482-82AF-4341-BAF7-EFC8A73E86F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankAdministration.Desktop", "BankAdministration.Desktop\BankAdministration.Desktop.csproj", "{F6C53482-82AF-4341-BAF7-EFC8A73E86F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankAdministration.WebApi.Tests", "BankAdministration.WebApi.Tests\BankAdministration.WebApi.Tests.csproj", "{EF46E1F8-C9D5-4F02-B103-D8C5B4BBDC6D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{F6C53482-82AF-4341-BAF7-EFC8A73E86F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6C53482-82AF-4341-BAF7-EFC8A73E86F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6C53482-82AF-4341-BAF7-EFC8A73E86F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF46E1F8-C9D5-4F02-B103-D8C5B4BBDC6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF46E1F8-C9D5-4F02-B103-D8C5B4BBDC6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF46E1F8-C9D5-4F02-B103-D8C5B4BBDC6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF46E1F8-C9D5-4F02-B103-D8C5B4BBDC6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
