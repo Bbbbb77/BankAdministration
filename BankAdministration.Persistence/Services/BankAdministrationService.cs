@@ -219,12 +219,12 @@ namespace BankAdministration.Persistence.Services
 
         public bool SetDeposit(Int64 amount, string bankAccountNumber)
         {
-            var bankAccount = context_.BankAccounts.SingleOrDefault(i => i.Number == bankAccountNumber);
+            var bankAccount = GetBankAccountByNumber(bankAccountNumber);
             if (bankAccount is null)
                 return false;
             var oldBalance = bankAccount.Balance;
             bankAccount.Balance += amount;
-            UpdateBankAccount(bankAccount);
+            
             var newTransaction1 = new Transaction
             {
                 TransactionType = TransactionTypeEnum.Deposit,
@@ -240,12 +240,13 @@ namespace BankAdministration.Persistence.Services
             };
 
             CreateTransaction(newTransaction1);
+            UpdateBankAccount(bankAccount);
             return true;
         }
 
         public bool SetTransfer(Int64 amount, string SourceNumber, string DestNumber, string DestUser)
         {
-            var srcBankAccount = context_.BankAccounts.SingleOrDefault(i => i.Number == SourceNumber);
+            var srcBankAccount = GetBankAccountByNumber(SourceNumber);
             if (srcBankAccount is null)
                 return false;
 
@@ -299,7 +300,7 @@ namespace BankAdministration.Persistence.Services
 
         public bool SetWithdrawn(Int64 amount, string bankAccountNumber)
         {
-            var bankAccount = context_.BankAccounts.SingleOrDefault(i => i.Number == bankAccountNumber);
+            var bankAccount = GetBankAccountByNumber(bankAccountNumber);
             if (bankAccount is null)
                 return false;
             if (bankAccount.Balance < amount)
@@ -322,6 +323,7 @@ namespace BankAdministration.Persistence.Services
                 BankAccount = bankAccount
             };
             CreateTransaction(transaction);
+            UpdateBankAccount(bankAccount);
             return true;
         }
     }

@@ -24,7 +24,7 @@ namespace BankAdministration.WebApi.Tests
         public BankAccountsControllerTest()
         {
             var options = new DbContextOptionsBuilder<BankAdministrationDbContext>()
-                .UseInMemoryDatabase("BankAccountsControllerTestDb")
+                .UseInMemoryDatabase("BankAccountsControllerTestDb2")
                 .Options;
 
             context_ = new BankAdministrationDbContext(options);

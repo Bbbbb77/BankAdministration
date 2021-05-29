@@ -65,7 +65,7 @@ namespace BankAdministration.WebApi.Controllers
         }
         
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles ="administrator")]
         public async Task<IActionResult> SetDeposit(DepositDto dto)
         {
             try

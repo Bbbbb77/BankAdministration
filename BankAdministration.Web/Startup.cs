@@ -35,7 +35,7 @@ namespace BankAdministration.Web
                     options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection"));
                 });
 
-            services.AddIdentity<User, IdentityRole>(options =>
+            services.AddIdentity<User, IdentityRole<string>>(options =>
             {
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 6;

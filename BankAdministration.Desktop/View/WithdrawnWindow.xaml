@@ -6,20 +6,20 @@
         xmlns:local="clr-namespace:BankAdministration.Desktop.View"
         xmlns:vModel="clr-namespace:BankAdministration.Desktop.VModel"
         mc:Ignorable="d"
-        Title="WithdrawnWindow" Height="100" Width="230">
+        Title="WithdrawnWindow" Height="120" Width="200">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <GroupBox Grid.Row="0">
-            <StackPanel>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="Amount of wirtdrawn." />
                 <TextBox x:Name="textbox" Width="150" Height="20" VerticalAlignment="Center" Text="{Binding WithdrawnAmount}"/>
             </StackPanel>
         </GroupBox>
         <GroupBox Grid.Row="1">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                 <Button Width="50"  Height="21" Margin="5" Content="Yes" Command="{Binding YesCommand}" />
                 <Button Width="50"  Height="21" Margin="5" Content="No" Command="{Binding NoCommand}" />
             </StackPanel>

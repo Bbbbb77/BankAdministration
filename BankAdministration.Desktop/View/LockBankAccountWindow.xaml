@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BankAdministration.Desktop.View"
         xmlns:vModel="clr-namespace:BankAdministration.Desktop.VModel"
         mc:Ignorable="d"
-        Title="LockBankAccountWindow" Height="130" Width="200">
+        Title="LockBankAccountWindow" Height="100" Width="250">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

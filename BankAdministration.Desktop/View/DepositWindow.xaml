@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BankAdministration.Desktop.View"
         xmlns:vModel="clr-namespace:BankAdministration.Desktop.VModel"
         mc:Ignorable="d"
-        Title="DepositWindow" Height="130" Width="200">
+        Title="DepositWindow" Height="120" Width="200">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -21,7 +21,7 @@
         </GroupBox>
 
         <GroupBox Grid.Row="1">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                 <Button Width="50"  Height="21" Margin="5" Content="Yes" Command="{Binding YesCommand}" />
                 <Button Width="50"  Height="21" Margin="5" Content="No" Command="{Binding NoCommand}" />
             </StackPanel>
