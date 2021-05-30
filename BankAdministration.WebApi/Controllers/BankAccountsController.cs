@@ -23,18 +23,9 @@ namespace BankAdministration.WebApi.Controllers
         {
             service_ = service;
         }
-
-        // GET: api/BankAccounts
-        [HttpGet]
-        [Authorize]
-        public ActionResult<IEnumerable<BankAccountDto>> GetBankAccounts()
-        {
-            var result = service_.GetBankAccounts().Select(bankAccounts => (BankAccountDto)bankAccounts).ToList();
-            return result;
-        }
         
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles ="administrator")]
         public async Task<IActionResult> GetBankAccountsByUserName(string userName)
         {
             try
@@ -50,7 +41,7 @@ namespace BankAdministration.WebApi.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles ="administrator")]
         public async Task<IActionResult> SetLock(LockDto dto)
         {
             try
@@ -80,7 +71,7 @@ namespace BankAdministration.WebApi.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles ="administrator")]
         public async Task<IActionResult> SetTransfer(TransferDto dto)
         {
             try
@@ -96,7 +87,7 @@ namespace BankAdministration.WebApi.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles ="administrator")]
         public async Task<IActionResult> SetWithdrawn(WithdrawnDto dto)
         {
             try

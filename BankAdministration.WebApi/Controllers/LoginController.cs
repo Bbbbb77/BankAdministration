@@ -26,6 +26,7 @@ namespace BankAdministration.WebApi.Controllers
 
         // api/Account/Login
         [HttpPost]
+        [Authorize(Roles ="administrator")]
         public async Task<IActionResult> Login([FromBody] LoginDto user)
         {
             if (signInManager_.IsSignedIn(User))
